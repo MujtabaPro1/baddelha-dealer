@@ -34,7 +34,7 @@ const CarDetail: React.FC = () => {
   const [showContactForm, setShowContactForm] = useState(false);
   const [car, setCar] = useState<any>(null);
   const [images, setImages] = useState<string[]>([]);
-  const [inspectionDetails,setInspectionDetails] = useState(null);
+  const [inspectionDetails,setInspectionDetails]: any = useState(null);
   const [inspectionSchema,setInspectionSchema] = useState(null);
   const [auctionDetails,setAuctionDetails] = useState<any>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>('');
@@ -162,7 +162,7 @@ const CarDetail: React.FC = () => {
               // Process inspection data if available
               if(_car['Inspection']){
                   _car['InspectionData'] = _car?.Inspection?.[0]?.inspectionJson;
-                  _inspectionData.map((i)=>{
+                  _inspectionData.map((i: any)=>{
                       i.fields.map((_i: any)=>{
                           Object.keys(_car['InspectionData']).map((cKey)=>{
                               if(cKey.replace(/_/g, " ") == _i.fieldName){

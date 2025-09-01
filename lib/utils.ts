@@ -71,7 +71,7 @@ export const validateEmail = (email: any) => {
   return re.test(email);
 }
 
-export const numberWithCommas = (x) => {
+export const numberWithCommas = (x: any) => {
 
   if(!x){
     return "";
