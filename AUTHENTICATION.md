@@ -2,7 +2,7 @@
 
 ## Overview
 
-The authentication system for DealerAuction Pro implements a client-side authentication flow using React Context API and localStorage for state persistence. This document outlines the implementation details, components, and flow of the authentication system.
+The authentication system for Badelha Dealer implements a client-side authentication flow using React Context API and localStorage for state persistence. This document outlines the implementation details, components, and flow of the authentication system.
 
 ## Components
 

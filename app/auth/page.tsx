@@ -83,7 +83,7 @@ export default function AuthPage() {
             <Car className="w-7 h-7 text-white" />
           </div>
           <div className="ml-3">
-            <h1 className="text-2xl font-bold text-slate-900">DealerAuction Pro</h1>
+            <h1 className="text-2xl font-bold text-slate-900">Badelha Dealer</h1>
             <p className="text-sm text-slate-600">Professional Vehicle Auction Platform</p>
           </div>
         </div>
