@@ -2994,7 +2994,6 @@ export const inspectionData_v2 = [
   },
 ];
 
-
 export const inspectionData = [
   {
     name: 'General Information',
@@ -3983,8 +3982,6 @@ export const inspectionData = [
     ],
   },
 ];
-
-
 
 export const CarMileage = 
 [
