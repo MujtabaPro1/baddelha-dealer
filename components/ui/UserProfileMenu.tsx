@@ -58,12 +58,22 @@ export function UserProfileMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">
           <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
+          <span onClick={() => router.push('/dealer/profile')} >Profile</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
           <Settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
+          <span onClick={() => router.push('/dealer/settings')} >Settings</span>
         </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer">
+          <Settings className="mr-2 h-4 w-4" />
+          <span onClick={() => router.push('/dealer/bids')} >Bids</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer">
+          <Settings className="mr-2 h-4 w-4" />
+          <span onClick={() => router.push('/dealer/invoices')} >Invoices</span>
+        </DropdownMenuItem>
+
+    
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer text-red-600" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
