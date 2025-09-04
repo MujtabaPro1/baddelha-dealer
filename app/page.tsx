@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import axiosInstance from '@/service/api';
 import { UserProfileMenu } from '@/components/ui/UserProfileMenu';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { Header } from '@/components/ui/Header';
 
 interface Car {
   id: string;
@@ -203,48 +204,23 @@ export default function CarAuctionPlatform() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-[#f8f9fa]">
       {/* Header */}
-      <header className="bg-white shadow-lg border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-[#f78f37] rounded-lg flex items-center justify-center">
-                  <Car className="w-6 h-6 text-white" />
-                </div>
-                <div onClick={()=>router.push('/')} className="cursor-pointer">
-                  <h1 className="text-2xl font-bold text-slate-900">Badelha Dealer</h1>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                Live Auction
-              </Badge>
-              <div className="text-right mr-4">
-                <p className="text-sm text-slate-600">Active Auctions</p>
-                <p className="text-xl font-bold text-slate-900">{cars.length}</p>
-              </div>
-              <UserProfileMenu />
-          </div>
-        </div>
-        </div>
-      </header>
+      <Header title="Live Auction" rightContent={<UserProfileMenu />} />
 
       {/* Search and Filters */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7f8c8d] w-5 h-5" />
             <Input
               placeholder="Search by make, model, or year..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              className="pl-10 h-12 border-[#e9ecef] focus:border-[#3498db] focus:ring-[#3498db]"
             />
           </div>
-          <Button variant="outline" className="h-12 px-6 border-slate-300 hover:bg-slate-50">
+          <Button variant="outline" className="h-12 px-6 border-[#e9ecef] bg-white hover:bg-[#f8f9fa] text-[#2c3e50]">
             <Filter className="w-5 h-5 mr-2" />
             Filters
           </Button>
@@ -253,13 +229,13 @@ export default function CarAuctionPlatform() {
         {/* Loading State */}
         {loading ? (
           <div className="flex justify-center items-center h-64 w-full">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-900"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#2c3e50]"></div>
           </div>
         ) : cars.length === 0 ? (
           <div className="flex justify-center items-center h-64 w-full">
             <div className="text-center">
-              <h3 className="text-xl font-semibold text-slate-700">No auctions available</h3>
-              <p className="text-slate-500 mt-2">There are currently no live auctions.</p>
+              <h3 className="text-xl font-semibold text-[#2c3e50]">No auctions available</h3>
+              <p className="text-[#7f8c8d] mt-2">There are currently no live auctions.</p>
             </div>
           </div>
         ) : (
@@ -580,52 +556,52 @@ export default function CarAuctionPlatform() {
 
         {/* Summary Stats */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="bg-gradient-to-br from-blue-900 to-blue-800 text-white border-0">
+          <Card className="bg-gradient-to-br from-[#2c3e50] to-[#34495e] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-200 text-sm">Total Vehicles</p>
+                  <p className="text-[#f8f9fa] text-sm">Total Vehicles</p>
                   <p className="text-3xl font-bold">{cars.length}</p>
                 </div>
-                <Car className="w-8 h-8 text-blue-300" />
+                <Car className="w-8 h-8 text-[#f8f9fa]" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-600 to-green-700 text-white border-0">
+          <Card className="bg-gradient-to-br from-[#2ecc71] to-[#27ae60] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-200 text-sm">Active Auctions</p>
+                  <p className="text-[#f8f9fa] text-sm">Active Auctions</p>
                   <p className="text-3xl font-bold">{cars.filter(car => car.timeRemaining > 0).length}</p>
                 </div>
-                <Timer className="w-8 h-8 text-green-300" />
+                <Timer className="w-8 h-8 text-[#f8f9fa]" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white border-0">
+          <Card className="bg-gradient-to-br from-[#f39c12] to-[#e67e22] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-amber-200 text-sm">Total Bids</p>
+                  <p className="text-[#f8f9fa] text-sm">Total Bids</p>
                   <p className="text-3xl font-bold">{cars.reduce((sum, car) => sum + car.bidCount, 0)}</p>
                 </div>
-                <TrendingUp className="w-8 h-8 text-amber-300" />
+                <TrendingUp className="w-8 h-8 text-[#f8f9fa]" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-600 to-purple-700 text-white border-0">
+          <Card className="bg-gradient-to-br from-[#3498db] to-[#2980b9] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-200 text-sm">Avg. Bid Value</p>
+                  <p className="text-[#f8f9fa] text-sm">Avg. Bid Value</p>
                   <p className="text-3xl font-bold">
                     {cars?.length ? formatCurrency(cars.reduce((sum, car) => sum + car.currentBid, 0) / cars.length) : '0'}
                   </p>
                 </div>
-                <DollarSign className="w-8 h-8 text-purple-300" />
+                <DollarSign className="w-8 h-8 text-[#f8f9fa]" />
               </div>
             </CardContent>
           </Card>
@@ -688,7 +664,7 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
 
 
   return (
-    <Card key={car.id} className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 shadow-lg bg-white cursor-pointer" onClick={() => openCarDetails(car)}>
+    <Card key={car.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border border-[#e9ecef] shadow-md bg-white cursor-pointer" onClick={() => openCarDetails(car)}>
     <div className="relative">
       <img
         src={car.image}
@@ -696,13 +672,13 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
         className="w-full h-48 object-cover"
       />
       <div className="absolute top-4 left-4">
-        <Badge className="bg-slate-900 text-white">
+        <Badge className="bg-[#2c3e50] text-white">
           {car.condition}
         </Badge>
       </div>
       <div className="absolute top-4 right-4">
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2">
-          <div className="flex items-center space-x-1 text-red-600">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
+          <div className="flex items-center space-x-1 text-[#2c3e50]">
             <Timer className="w-4 h-4" />
             <span className="font-mono text-sm font-bold">
               {timeRemainingText}
@@ -712,26 +688,26 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
       </div>
     </div>
 
-    <CardHeader className="pb-4">
-      <CardTitle className="text-xl text-slate-900">
+    <CardHeader className="pb-3 pt-4">
+      <CardTitle className="text-xl text-[#2c3e50]">
         {car.year} {car.make} {car.model}
       </CardTitle>
-      <div className="flex items-center justify-between text-sm text-slate-600">
+      <div className="flex items-center justify-between text-sm text-[#7f8c8d] mt-1">
         <span>{car.mileage.toLocaleString()} miles</span>
         <span>{car.location}</span>
       </div>
     </CardHeader>
 
-    <CardContent className="space-y-6">
+    <CardContent className="space-y-5">
       {/* Vehicle Details */}
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div>
-          <p className="text-slate-500">Engine</p>
-          <p className="font-semibold text-slate-900">{car.engine}</p>
+          <p className="text-[#7f8c8d]">Engine</p>
+          <p className="font-semibold text-[#2c3e50]">{car.engine}</p>
         </div>
         <div>
-          <p className="text-slate-500">Transmission</p>
-          <p className="font-semibold text-slate-900">{car.transmission}</p>
+          <p className="text-[#7f8c8d]">Transmission</p>
+          <p className="font-semibold text-[#2c3e50]">{car.transmission}</p>
         </div>
       </div>
 
@@ -739,75 +715,35 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-500">Current Bid</p>
-            <p className="text-2xl font-bold text-blue-900">{formatCurrency(car.currentBid)}</p>
+            <p className="text-sm text-[#7f8c8d]">Current Bid</p>
+            <p className="text-2xl font-bold text-[#2c3e50]">{formatCurrency(car.currentBid)}</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-slate-500">Bids</p>
-            <p className="text-lg font-semibold text-slate-700">{car.bidCount}</p>
+            <p className="text-sm text-[#7f8c8d]">Bids</p>
+            <p className="text-lg font-semibold text-[#34495e]">{car.bidCount}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-green-50 rounded-lg p-3">
+          <div className="bg-[#f8f9fa] rounded-lg p-3 border border-[#e9ecef]">
             <div className="flex items-center space-x-2">
-              <TrendingUp className="w-4 h-4 text-green-600" />
-              <span className="text-sm text-green-600">Highest</span>
+              <TrendingUp className="w-4 h-4 text-[#3498db]" />
+              <span className="text-sm text-[#34495e]">Highest</span>
             </div>
-            <p className="font-bold text-green-700">{formatCurrency(car.highestBid)}</p>
+            <p className="font-bold text-[#2c3e50]">{formatCurrency(car.highestBid)}</p>
           </div>
-          <div className="bg-red-50 rounded-lg p-3">
+          <div className="bg-[#f8f9fa] rounded-lg p-3 border border-[#e9ecef]">
             <div className="flex items-center space-x-2">
-              <TrendingDown className="w-4 h-4 text-red-600" />
-              <span className="text-sm text-red-600">Starting</span>
+              <TrendingDown className="w-4 h-4 text-[#34495e]" />
+              <span className="text-sm text-[#34495e]">Starting</span>
             </div>
-            <p className="font-bold text-red-700">{formatCurrency(car.lowestBid)}</p>
+            <p className="font-bold text-[#2c3e50]">{formatCurrency(car.lowestBid)}</p>
           </div>
         </div>
 
-        {/* Bidding Interface */}
-        <div className="space-y-3">
-          <div className="flex space-x-2">
-            <Input
-              type="number"
-              placeholder="Enter bid amount"
-              value={selectedCar?.id === car.id ? bidAmount : ''}
-              onChange={(e) => {
-                setBidAmount(e.target.value);
-                setSelectedCar(car);
-              }}
-              className="flex-1"
-              min={car.currentBid + 500}
-            />
-            <Button
-              onClick={() => {
-                const amount = parseInt(bidAmount);
-                if (amount > car.currentBid) {
-                  placeBid(car.id, amount);
-                }
-              }}
-              disabled={!bidAmount || parseInt(bidAmount) <= car.currentBid || timeRemainingSeconds === 0}
-              className="bg-blue-900 hover:bg-blue-800 text-white px-6"
-            >
-              <DollarSign className="w-4 h-4 mr-1" />
-              Bid
-            </Button>
-          </div>
-          <p className="text-xs text-slate-500">
-            Minimum bid: {formatCurrency(car.currentBid + 500)}
-          </p>
-        </div>
-
+     
         {/* Time Status */}
-        <div className={`text-center py-2 rounded-lg ${
-          timeRemainingSeconds > 3600 
-            ? 'bg-green-50 text-green-700' 
-            : timeRemainingSeconds > 1800 
-            ? 'bg-yellow-50 text-yellow-700'
-            : timeRemainingSeconds > 0
-            ? 'bg-red-50 text-red-700'
-            : 'bg-gray-50 text-gray-700'
-        }`}>
+        <div className={`text-center py-2 rounded-lg border ${timeRemainingSeconds > 0 ? 'border-[#e9ecef]' : 'border-[#e9ecef]'} ${timeRemainingSeconds === 0 ? 'bg-[#f8f9fa] text-[#7f8c8d]' : 'bg-[#f8f9fa] text-[#2c3e50]'}`}>
           {timeRemainingSeconds > 0 ? (
             <span className="font-semibold">
               Ends in {timeRemainingText}

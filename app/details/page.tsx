@@ -225,7 +225,7 @@ const CarDetail: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f8f9fa]">
 
       <Header />
       
@@ -234,12 +234,12 @@ const CarDetail: React.FC = () => {
       <div className="container mx-auto px-4 py-8 pt-20">
         {/* Breadcrumb */}
         <nav className="mb-6">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <a href="/buy" className="hover:text-[#f78f37] transition">Cars for Sale</a>
+          <div className="flex items-center space-x-2 text-sm text-[#7f8c8d]">
+            <a href="/buy" className="hover:text-[#f39c12] transition">Cars for Sale</a>
             <ChevronRight className="h-4 w-4" />
-            <a href="/buy" className="hover:text-[#f78f37] transition">{car?.make}</a>
+            <a href="/buy" className="hover:text-[#f39c12] transition">{car?.make}</a>
             <ChevronRight className="h-4 w-4" />
-            <span className="text-gray-900">{car?.model}</span>
+            <span className="text-[#2c3e50]">{car?.model}</span>
           </div>
         </nav>
 
@@ -385,8 +385,8 @@ const CarDetail: React.FC = () => {
                       onClick={() => setActiveTab(id as any)}
                       className={`flex items-center py-4 px-1 border-b-2 font-medium text-sm transition ${
                         activeTab === id
-                          ? 'border-[#f78f37] text-[#f78f37]'
-                          : 'border-transparent text-gray-500 hover:text-gray-700'
+                          ? 'border-[#f39c12] text-[#f39c12]'
+                          : 'border-transparent text-[#7f8c8d] hover:text-[#2c3e50]'
                       }`}
                     >
                       <Icon className="h-4 w-4 mr-2" />
@@ -399,27 +399,209 @@ const CarDetail: React.FC = () => {
               <div className="p-6">
                 {/* Overview Tab */}
                 {activeTab === 'overview' && (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="font-semibold mb-2">Vehicle Details</h4>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span>VIN:</span>
-                            <span className="font-mono">100 100 100 100</span>
+                  <div className="space-y-8">
+                    {/* Vehicle Overview Section */}
+                    <div className="bg-[#f8f9fa] rounded-xl p-6 border border-[#e9ecef]">
+                      <h3 className="text-xl font-semibold text-[#2c3e50] mb-4 flex items-center">
+                        <FileText className="h-5 w-5 mr-2 text-[#3498db]" />
+                        Vehicle Overview
+                      </h3>
+                      
+                      <div className="prose max-w-none text-[#2c3e50]">
+                        <p>
+                          This {car.year} {car.make} {car.model} is in excellent condition with {car?.mileage ? car.mileage.toLocaleString() : '0'} km on the odometer. 
+                          It features a powerful {car?.engine || 'engine'} with {car?.transmission || 'Automatic'} transmission, providing a smooth and responsive driving experience.
+                        </p>
+                        <p className="mt-4">
+                          The vehicle comes with a comprehensive service history and has been well-maintained by its previous owner.
+                          It has undergone a thorough inspection by our certified technicians to ensure it meets our quality standards.
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        <div className="bg-white rounded-lg p-4 border border-[#e9ecef] shadow-sm">
+                          <div className="flex items-center mb-3">
+                            <Shield className="h-5 w-5 text-[#2ecc71] mr-2" />
+                            <h4 className="font-semibold text-[#2c3e50]">Warranty</h4>
                           </div>
-                          <div className="flex justify-between">
-                            <span>Exterior Color:</span>
-                            <span>Black</span>
+                          <p className="text-sm text-[#7f8c8d]">
+                            Remaining manufacturer warranty until {new Date().getFullYear() + 1}
+                          </p>
+                        </div>
+                        
+                        <div className="bg-white rounded-lg p-4 border border-[#e9ecef] shadow-sm">
+                          <div className="flex items-center mb-3">
+                            <Check className="h-5 w-5 text-[#2ecc71] mr-2" />
+                            <h4 className="font-semibold text-[#2c3e50]">Inspection</h4>
                           </div>
-                          <div className="flex justify-between">
-                            <span>Interior Color:</span>
-                            <span>Black</span>
+                          <p className="text-sm text-[#7f8c8d]">
+                            Passed our 150-point inspection process
+                          </p>
+                        </div>
+                        
+                        <div className="bg-white rounded-lg p-4 border border-[#e9ecef] shadow-sm">
+                          <div className="flex items-center mb-3">
+                            <Car className="h-5 w-5 text-[#2ecc71] mr-2" />
+                            <h4 className="font-semibold text-[#2c3e50]">Service</h4>
                           </div>
-                          <div className="flex justify-between">
-                            <span>Drive Type:</span>
-                            <span>4WD</span>
-                          </div>
+                          <p className="text-sm text-[#7f8c8d]">
+                            Full service history available
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* USP Section */}
+                    <div className="bg-gradient-to-r from-[#2c3e50] to-[#34495e] rounded-xl p-6 text-white">
+                      <h3 className="text-xl font-semibold mb-4 flex items-center">
+                        <Star className="h-5 w-5 mr-2 text-[#f39c12]" />
+                        Unique Selling Points
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                          <h4 className="font-semibold flex items-center">
+                            <Check className="h-4 w-4 mr-2 text-[#f39c12]" />
+                            Premium Features
+                          </h4>
+                          <ul className="mt-2 space-y-1 text-sm">
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Premium leather interior
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Panoramic sunroof
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Advanced driver assistance systems
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Premium sound system
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                          <h4 className="font-semibold flex items-center">
+                            <Check className="h-4 w-4 mr-2 text-[#f39c12]" />
+                            Performance & Efficiency
+                          </h4>
+                          <ul className="mt-2 space-y-1 text-sm">
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Fuel-efficient engine
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Sport-tuned suspension
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              All-wheel drive capability
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Smooth acceleration and handling
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                          <h4 className="font-semibold flex items-center">
+                            <Check className="h-4 w-4 mr-2 text-[#f39c12]" />
+                            Safety Features
+                          </h4>
+                          <ul className="mt-2 space-y-1 text-sm">
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              360° camera system
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Blind spot monitoring
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Lane keeping assist
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Adaptive cruise control
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                          <h4 className="font-semibold flex items-center">
+                            <Check className="h-4 w-4 mr-2 text-[#f39c12]" />
+                            Technology
+                          </h4>
+                          <ul className="mt-2 space-y-1 text-sm">
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Wireless smartphone integration
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Digital instrument cluster
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Touchscreen infotainment system
+                            </li>
+                            <li className="flex items-center">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#f39c12] mr-2"></div>
+                              Voice-activated controls
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Vehicle Details Section */}
+                    <div className="bg-[#f8f9fa] rounded-xl p-6 border border-[#e9ecef]">
+                      <h3 className="text-xl font-semibold text-[#2c3e50] mb-4 flex items-center">
+                        <FileText className="h-5 w-5 mr-2 text-[#3498db]" />
+                        Vehicle Specifications
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                        <div className="flex justify-between py-2 border-b border-[#e9ecef]">
+                          <span className="font-medium text-[#7f8c8d]">VIN:</span>
+                          <span className="font-mono text-[#2c3e50]">100 100 100 100</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-[#e9ecef]">
+                          <span className="font-medium text-[#7f8c8d]">Exterior Color:</span>
+                          <span className="text-[#2c3e50]">Black</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-[#e9ecef]">
+                          <span className="font-medium text-[#7f8c8d]">Interior Color:</span>
+                          <span className="text-[#2c3e50]">Black</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-[#e9ecef]">
+                          <span className="font-medium text-[#7f8c8d]">Drive Type:</span>
+                          <span className="text-[#2c3e50]">4WD</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-[#e9ecef]">
+                          <span className="font-medium text-[#7f8c8d]">Engine:</span>
+                          <span className="text-[#2c3e50]">{car?.engine || 'V6'}</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-[#e9ecef]">
+                          <span className="font-medium text-[#7f8c8d]">Horsepower:</span>
+                          <span className="text-[#2c3e50]">300 HP</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-[#e9ecef]">
+                          <span className="font-medium text-[#7f8c8d]">Torque:</span>
+                          <span className="text-[#2c3e50]">295 lb-ft</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-[#e9ecef]">
+                          <span className="font-medium text-[#7f8c8d]">Fuel Economy:</span>
+                          <span className="text-[#2c3e50]">9.8L/100km combined</span>
                         </div>
                       </div>
                     </div>
@@ -430,85 +612,142 @@ const CarDetail: React.FC = () => {
 
                 {/* Inspection Tab */}
                 {activeTab === 'inspection' && (
-                   <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                   <div className="px-4 py-5 sm:px-6">
-                     <h3 className="text-lg leading-6 font-medium text-gray-900">Inspection Report</h3>
-                     <p className="mt-1 max-w-2xl text-sm text-gray-500">Detailed inspection information.</p>
-                   </div>
-                   
-                   {!inspectionDetails?.inspectionJson ? (
-                     <div className="px-4 py-5 sm:px-6 text-center">
-                       <p className="text-gray-500">No inspection report available for this car.</p>
-                     </div>
-                   ) : !inspectionSchema ? (
-                     <div className="px-4 py-5 sm:px-6 flex justify-center">
-                       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-900"></div>
-                     </div>
-                   ) : (
-                     <div className="border-t border-gray-200">
-                       {/* Inspection Progress Overview */}
-                       <div className="px-4 py-5 sm:px-6">
-                         
-                         <div className={"grid grid-cols-1 gap-2 bg-white"}>
-                     <div >
-                       <div className={"w-full p-4 rounded-md bg-[#F6F9FC] font-bold  mt-2 mb-2 text-[#000] flex justify-between items-center"}>
-                         <h1>Information</h1>
-                       </div>
-         
-                       {inspectionDetails ?
-                       Object.keys(inspectionDetails?.inspectionJson).map((i, index) => {
-         
-         
-                         if(i == 'overview'){
-                           return <></>;
-                         }
-         
-                         return (
-                             <div key={i + index} >
-                               <div className={'w-full'}>
-                                 <div className={"m-2  border-b border-b-[#F7F7F7] flex items-center justify-between"} key={i + index}>
-                                   <p className={"font-bold text-[#000] mt-1 mb-1"}>{i.replace(/_/g, " ")}</p>
-                                   <p className={"mt-1 mb-1"}>{typeof inspectionDetails?.inspectionJson[i] == 'object' && inspectionDetails?.inspectionJson[i]?.length ? inspectionDetails?.inspectionJson[i][0].value : typeof inspectionDetails?.inspectionJson[i] == 'object' && !inspectionDetails?.inspectionJson[i]?.length ?  inspectionDetails?.inspectionJson[i]?.value : inspectionDetails?.inspectionJson[i] == "" ? "N/A" : inspectionDetails?.inspectionJson[i]}</p>
-                                 </div>
-                               </div>
-                             </div>
-                           );
-                         }) : <>
-                         <p className="text-center mt-10 text-gray-500 text-lg">Loading Inspection Preview Soon .. </p>
-                         </>}
-                     </div>
-         
-                     <div >
-                       <div className={"w-full p-4 rounded-md bg-[#F6F9FC] font-bold  mt-2 mb-2 text-[#000] "}>Images</div>
-                       <div className="flex flex-wrap">
-                         {images?.length && images?.map((img: any, index: number) => {
-                           return (
-                             <div key={img.caption + index}>
-                               <div className={"flex flex-wrap cursor-pointer items-start justify-start"}>
-                                 <div
-                                   onClick={() => {
+                  <div className="bg-white shadow overflow-hidden rounded-xl border border-[#e9ecef]">
+                    <div className="px-6 py-5">
+                      <h3 className="text-xl font-semibold text-[#2c3e50] flex items-center">
+                        <Shield className="h-5 w-5 mr-2 text-[#f39c12]" />
+                        Inspection Report
+                      </h3>
+                      <p className="mt-1 text-sm text-[#7f8c8d]">Comprehensive vehicle condition assessment</p>
+                    </div>
+                    
+                    {!inspectionDetails?.inspectionJson ? (
+                      <div className="px-6 py-8 text-center">
+                        <div className="bg-[#f8f9fa] p-6 rounded-lg">
+                          <Shield className="h-12 w-12 mx-auto text-[#7f8c8d] mb-3" />
+                          <p className="text-[#7f8c8d] font-medium">No inspection report available for this vehicle.</p>
+                        </div>
+                      </div>
+                    ) : !inspectionSchema ? (
+                      <div className="px-6 py-12 flex justify-center">
+                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#3498db]"></div>
+                      </div>
+                    ) : (
+                      <div className="border-t border-[#e9ecef]">
+                        {/* Inspection Content */}
+                        <div className="px-6 py-5">
+                          <div className="grid grid-cols-1 gap-6">
+                            {/* Information Section */}
+                            <div className="bg-[#f8f9fa] rounded-xl p-6 border border-[#e9ecef]">
+                              <h4 className="text-lg font-semibold text-[#2c3e50] mb-4 flex items-center">
+                                <FileText className="h-5 w-5 mr-2 text-[#3498db]" />
+                                Vehicle Information
+                              </h4>
+                              
+                              {inspectionDetails ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  {Object.keys(inspectionDetails?.inspectionJson).map((i, index) => {
+                                    if(i === 'overview') return null;
                                     
-                                   }}
-                                   className={"w-[120px] text-center ml-2 mr-2"}
-                                 >
-                                   <img className={"w-[120px] h-[100px] m-2 rounded-lg"} src={img} />
-                                   <small>{img.caption}</small>
-                                 </div>
-                               </div>
-                             </div>
-                           )
-                         })}
-                       </div>
-                       <p className="w-full p-4 rounded-md bg-[#F6F9FC] font-bold  mt-2 mb-2 text-[#000] text-lg">Car Body Condition</p>
-                       {inspectionDetails?.carBodyConditionJson && <CarBodySvgView data={inspectionDetails?.carBodyConditionJson}/>}
-                     </div>
-                   </div>
-                   </div>
-                       
-                      
-                     </div>
-                   )}
-                 </div>
+                                    const value = typeof inspectionDetails?.inspectionJson[i] === 'object' && 
+                                      inspectionDetails?.inspectionJson[i]?.length ? 
+                                      inspectionDetails?.inspectionJson[i][0].value : 
+                                      typeof inspectionDetails?.inspectionJson[i] === 'object' && 
+                                      !inspectionDetails?.inspectionJson[i]?.length ? 
+                                      inspectionDetails?.inspectionJson[i]?.value : 
+                                      inspectionDetails?.inspectionJson[i] === "" ? "N/A" : 
+                                      inspectionDetails?.inspectionJson[i];
+                                    
+                                    return (
+                                      <div key={i + index} className="p-3 bg-white rounded-lg border border-[#e9ecef] transition-all hover:shadow-md">
+                                        <p className="text-sm font-medium text-[#7f8c8d] mb-1">{i.replace(/_/g, " ")}</p>
+                                        <p className="font-semibold text-[#2c3e50]">{value}</p>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <div className="flex justify-center py-6">
+                                  <p className="text-[#7f8c8d]">Loading inspection details...</p>
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Images Section */}
+                            <div className="bg-[#f8f9fa] rounded-xl p-6 border border-[#e9ecef]">
+                              <h4 className="text-lg font-semibold text-[#2c3e50] mb-4 flex items-center">
+                                <img className="h-5 w-5 mr-2" src="/camera-icon.svg" alt="Camera" />
+                                Vehicle Images
+                              </h4>
+                              
+                              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                {images?.length > 0 ? images?.map((img: any, index: number) => (
+                                  <div key={`img-${index}`} className="group">
+                                    <div className="overflow-hidden rounded-lg border border-[#e9ecef] bg-white shadow-sm transition-all hover:shadow-md">
+                                      <div className="aspect-square relative">
+                                        <img 
+                                          className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105" 
+                                          src={img} 
+                                          alt={`Vehicle image ${index + 1}`} 
+                                        />
+                                      </div>
+                                      {img.caption && (
+                                        <div className="p-2 text-xs text-center text-[#7f8c8d] truncate">
+                                          {img.caption}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )) : (
+                                  <div className="col-span-full text-center py-8 text-[#7f8c8d]">
+                                    No detailed images available
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Car Body Condition Section */}
+                            <div className="bg-[#f8f9fa] rounded-xl p-6 border border-[#e9ecef]">
+                              <h4 className="text-lg font-semibold text-[#2c3e50] mb-4 flex items-center">
+                                <Car className="h-5 w-5 mr-2 text-[#f39c12]" />
+                                Car Body Condition
+                              </h4>
+                              
+                              <div className="bg-white p-4 rounded-lg border border-[#e9ecef]">
+                                {inspectionDetails?.carBodyConditionJson ? (
+                                  <CarBodySvgView data={inspectionDetails?.carBodyConditionJson}/>
+                                ) : (
+                                  <div className="text-center py-8 text-[#7f8c8d]">
+                                    No body condition data available
+                                  </div>
+                                )}
+                              </div>
+                              
+                              {/* Legend */}
+                              <div className="mt-4 flex flex-wrap gap-3 justify-center">
+                                <div className="flex items-center">
+                                  <div className="w-4 h-4 bg-[#2ecc71] rounded-full mr-2"></div>
+                                  <span className="text-sm text-[#7f8c8d]">Original</span>
+                                </div>
+                                <div className="flex items-center">
+                                  <div className="w-4 h-4 bg-[#f39c12] rounded-full mr-2"></div>
+                                  <span className="text-sm text-[#7f8c8d]">Repainted</span>
+                                </div>
+                                <div className="flex items-center">
+                                  <div className="w-4 h-4 bg-[#e74c3c] rounded-full mr-2"></div>
+                                  <span className="text-sm text-[#7f8c8d]">Damaged</span>
+                                </div>
+                                <div className="flex items-center">
+                                  <div className="w-4 h-4 bg-[#7f8c8d] rounded-full mr-2"></div>
+                                  <span className="text-sm text-[#7f8c8d]">Not Available</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 )}
 
             
@@ -519,25 +758,28 @@ const CarDetail: React.FC = () => {
           {/* Right Column - Dealer Info and Actions */}
           <div className="space-y-6">
             {/* Place Bid Section */}
-            <div className="bg-white rounded-xl shadow-md p-6 top-24">
+            <div className="bg-white rounded-xl shadow-md p-6 top-24 border border-[#e9ecef]">
               <div className="mb-6">
-                <h3 className="text-xl font-semibold text-[#3d3d40] mb-2">Place Your Bid</h3>
+                <h3 className="text-xl font-semibold text-[#2c3e50] mb-2 flex items-center">
+                  <Star className="h-5 w-5 mr-2 text-[#f39c12]" />
+                  Place Your Bid
+                </h3>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Seller's Price:</span>
-                  <span className="text-lg font-bold text-[#3d3d40]">SAR {numberWithCommas(car?.bookValue)}</span>
+                  <span className="text-[#7f8c8d]">Seller's Price:</span>
+                  <span className="text-lg font-bold text-[#2c3e50]">SAR {numberWithCommas(car?.bookValue)}</span>
                 </div>
               </div>
               
               {/* Bid Form */}
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="bidAmount" className="block text-sm font-medium text-gray-700 mb-1">Your Bid Amount (SAR)</label>
+                  <label htmlFor="bidAmount" className="block text-sm font-medium text-[#2c3e50] mb-1">Your Bid Amount (SAR)</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">SAR</span>
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-[#7f8c8d]">SAR</span>
                     <input 
                       type="number" 
                       id="bidAmount" 
-                      className="block w-full pl-12 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#f78f37] focus:border-[#f78f37]" 
+                      className="block w-full pl-12 pr-3 py-2 border border-[#e9ecef] rounded-md shadow-sm focus:ring-[#f39c12] focus:border-[#f39c12]" 
                       placeholder="Enter amount" 
                       min={car?.bookValue} 
                       step="1000"
@@ -558,7 +800,7 @@ const CarDetail: React.FC = () => {
               
                 <button 
                   type="submit"
-                  className="w-full bg-[#f78f37] hover:bg-[#e67d26] text-white font-semibold py-3 px-6 rounded-lg transition transform hover:scale-105"
+                  className="w-full bg-[#f39c12] hover:bg-[#e67e22] text-white font-semibold py-3 px-6 rounded-lg transition transform hover:scale-105 shadow-md"
                   onClick={(e) => {
                     e.preventDefault();
                     const bidInput = document.getElementById('bidAmount') as HTMLInputElement;
@@ -598,28 +840,31 @@ const CarDetail: React.FC = () => {
            
 
             {/* Quick Facts */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Facts</h3>
+            <div className="bg-white rounded-xl shadow-md p-6 border border-[#e9ecef]">
+              <h3 className="text-lg font-semibold mb-4 text-[#2c3e50] flex items-center">
+                <FileText className="h-5 w-5 mr-2 text-[#3498db]" />
+                Quick Facts
+              </h3>
               <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Condition</span>
-                  <span className="font-medium">Good</span>
+                <div className="flex items-center justify-between py-2 border-b border-[#e9ecef]">
+                  <span className="text-[#7f8c8d]">Condition</span>
+                  <span className="font-medium text-[#2c3e50]">Good</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Body Type</span>
-                  <span className="font-medium">{car?.bodyType}</span>
+                <div className="flex items-center justify-between py-2 border-b border-[#e9ecef]">
+                  <span className="text-[#7f8c8d]">Body Type</span>
+                  <span className="font-medium text-[#2c3e50]">{car?.bodyType}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Engine</span>
-                  <span className="font-medium">{car?.engine}</span>
+                <div className="flex items-center justify-between py-2 border-b border-[#e9ecef]">
+                  <span className="text-[#7f8c8d]">Engine</span>
+                  <span className="font-medium text-[#2c3e50]">{car?.engine}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Drive Type</span>
-                  <span className="font-medium">4WD</span>
+                <div className="flex items-center justify-between py-2 border-b border-[#e9ecef]">
+                  <span className="text-[#7f8c8d]">Drive Type</span>
+                  <span className="font-medium text-[#2c3e50]">4WD</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Fuel Type</span>
-                  <span className="font-medium">Petrol</span>
+                <div className="flex items-center justify-between py-2 border-b border-[#e9ecef]">
+                  <span className="text-[#7f8c8d]">Fuel Type</span>
+                  <span className="font-medium text-[#2c3e50]">Petrol</span>
                 </div>
               </div>
             </div>

@@ -38,44 +38,44 @@ export function UserProfileMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center space-x-2 rounded-full p-1 hover:bg-slate-100 transition-colors">
-          <Avatar className="h-8 w-8 border border-slate-200">
+        <button className="flex items-center space-x-2 rounded-full p-1 hover:bg-[#34495e]/30 transition-colors duration-200">
+          <Avatar className="h-8 w-8 border-2 border-[#f39c12] shadow-sm">
             <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback className="bg-blue-100 text-blue-800 font-medium">
+            <AvatarFallback className="bg-[#f39c12]/20 text-[#f39c12] font-medium">
               {getInitials(user.name)}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium hidden md:inline">{user.name}</span>
+          <span className="text-sm font-medium hidden md:inline text-white">{user.name}</span>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56 border-[#e9ecef] bg-white shadow-lg rounded-md overflow-hidden">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium">{user.name}</p>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
+            <p className="text-sm font-medium text-[#2c3e50]">{user.name}</p>
+            <p className="text-xs text-[#7f8c8d]">{user.email}</p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
-          <User className="mr-2 h-4 w-4" />
+        <DropdownMenuSeparator className="bg-[#e9ecef]" />
+        <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
+          <User className="mr-2 h-4 w-4 text-[#34495e]" />
           <span onClick={() => router.push('/dealer/profile')} >Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
+        <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
+          <Settings className="mr-2 h-4 w-4 text-[#34495e]" />
           <span onClick={() => router.push('/dealer/settings')} >Settings</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
+        <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
+          <Settings className="mr-2 h-4 w-4 text-[#34495e]" />
           <span onClick={() => router.push('/dealer/bids')} >Bids</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
+        <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
+          <Settings className="mr-2 h-4 w-4 text-[#34495e]" />
           <span onClick={() => router.push('/dealer/invoices')} >Invoices</span>
         </DropdownMenuItem>
 
     
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer text-red-600" onClick={handleLogout}>
+        <DropdownMenuSeparator className="bg-[#e9ecef]" />
+        <DropdownMenuItem className="cursor-pointer text-[#e74c3c] hover:bg-[#f8f9fa] hover:text-[#c0392b] transition-colors duration-200" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
