@@ -64,10 +64,6 @@ export function UserProfileMenu() {
           <span onClick={() => router.push('/dealer/profile')} >Profile</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
-          <Settings className="mr-2 h-4 w-4 text-[#34495e]" />
-          <span onClick={() => router.push('/dealer/settings')} >Settings</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
           <Table className="mr-2 h-4 w-4 text-[#34495e]" />
           <span onClick={() => router.push('/dealer/bids')} >Bids</span>
         </DropdownMenuItem>

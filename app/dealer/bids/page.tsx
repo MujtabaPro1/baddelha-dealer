@@ -232,7 +232,7 @@ export default function DealerBidsPage() {
 }
 
 const BidCard = ({ bid, formatCurrency, getStatusBadge }: { 
-  bid: Bid, 
+  bid: any, 
   formatCurrency: (amount: number) => string,
   getStatusBadge: (status: string) => JSX.Element
 }) => {
@@ -253,7 +253,7 @@ const BidCard = ({ bid, formatCurrency, getStatusBadge }: {
           <div className="flex flex-col md:flex-row justify-between">
             <div>
               <h3 className="text-xl font-bold text-slate-900">
-                {bid.carDetails?.year || '2020'} {bid.carDetails?.make || 'Audi'} {bid.carDetails?.model || 'A4'}
+                {bid.Car?.modelYear || '2020'} {bid.Car?.make || 'Audi'} {bid.Car?.model || 'A4'}
               </h3>
               <div className="flex flex-col mt-2 space-y-4">
                 <p className="text-sm">Bid ID: {bid.id}</p>
