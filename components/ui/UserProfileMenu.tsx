@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { LogOut, User, Settings } from 'lucide-react';
+import { LogOut, User, Settings, Table, Receipt } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -13,10 +13,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import axiosInstance from '@/service/api';
 
 export function UserProfileMenu() {
   const { user, logout } = useAuth();
   const router = useRouter();
+
+
 
   const handleLogout = async () => {
     await logout();
@@ -65,11 +68,11 @@ export function UserProfileMenu() {
           <span onClick={() => router.push('/dealer/settings')} >Settings</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
-          <Settings className="mr-2 h-4 w-4 text-[#34495e]" />
+          <Table className="mr-2 h-4 w-4 text-[#34495e]" />
           <span onClick={() => router.push('/dealer/bids')} >Bids</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
-          <Settings className="mr-2 h-4 w-4 text-[#34495e]" />
+          <Receipt className="mr-2 h-4 w-4 text-[#34495e]" />
           <span onClick={() => router.push('/dealer/invoices')} >Invoices</span>
         </DropdownMenuItem>
 

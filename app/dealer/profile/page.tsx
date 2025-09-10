@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Header } from '@/components/ui/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,54 +10,56 @@ import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, Mail, Phone, MapPin, Building, Shield, Star, Edit, Upload, Save, X } from 'lucide-react';
+import axiosInstance from '@/service/api';
+import { NotificationDemo } from '@/components/ui/NotificationDemo';
 
-interface DealerProfile {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  country: string;
-  postalCode: string;
-  companyName: string;
-  taxId: string;
-  licenseNumber: string;
-  bio: string;
-  avatar: string;
-  website: string;
-  foundedYear: number;
-  totalSales: number;
-  rating: number;
-  verificationStatus: 'verified' | 'pending' | 'unverified';
-}
 
 export default function DealerProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  
-  // Dummy data for dealer profile
-  const [profile, setProfile] = useState<DealerProfile>({
-    id: 'dealer-001',
-    name: 'Ahmed Al-Saud',
-    email: 'ahmed@badelha-motors.com',
-    phone: '+966 50 123 4567',
-    address: '123 King Fahd Road',
-    city: 'Riyadh',
-    country: 'Saudi Arabia',
-    postalCode: '12345',
-    companyName: 'Badelha Motors',
-    taxId: 'TX-9876543210',
-    licenseNumber: 'DL-2025-0123',
-    bio: 'Premium car dealer with over 15 years of experience in luxury and high-end vehicles. Specializing in import and export of exclusive models across the Middle East.',
-    avatar: 'https://img3.stockfresh.com/files/k/kraska/m/97/808337_stock-photo-user-icon.jpg',
-    website: 'www.badelha-motors.com',
-    foundedYear: 2010,
-    totalSales: 1250,
-    rating: 4.8,
-    verificationStatus: 'verified',
-  });
 
-  const [editedProfile, setEditedProfile] = useState<DealerProfile>({...profile});
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const getProfile = async () => {
+    try {
+      const response = await axiosInstance.get('1.0/dealer/profile');
+      console.log(response?.data);
+      if (response?.data) {
+        setProfile(
+          {
+
+            address: '123 King Fahd Road',
+            city: 'Riyadh',
+            country: 'Saudi Arabia',
+            postalCode: '12345',
+            companyName: 'Badelha Motors',
+            taxId: 'TX-9876543210',
+            licenseNumber: 'DL-2025-0123',
+            bio: 'Premium car dealer with over 15 years of experience in luxury and high-end vehicles. Specializing in import and export of exclusive models across the Middle East.',
+            avatar: 'https://img3.stockfresh.com/files/k/kraska/m/97/808337_stock-photo-user-icon.jpg',
+            website: 'www.badelha-motors.com',
+            foundedYear: 0,
+            totalSales: 0,
+            rating: 5,
+            verificationStatus: 'verified',
+            ...response?.data
+          })
+       
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
+
+  
+
+ 
+
+  // Dummy data for dealer profile
+  const [profile, setProfile] = useState<any>({});
+
+  const [editedProfile, setEditedProfile] = useState<any>({...profile});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -120,7 +122,7 @@ export default function DealerProfilePage() {
                 <div className="relative">
                   <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
                     <AvatarImage src={profile.avatar} />
-                    <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{profile?.firstName?.charAt(0)}</AvatarFallback>
                   </Avatar>
                   {isEditing && (
                     <div className="absolute bottom-0 right-0">
@@ -130,7 +132,7 @@ export default function DealerProfilePage() {
                     </div>
                   )}
                 </div>
-                <h2 className="mt-4 text-xl font-bold text-slate-900">{profile.name}</h2>
+                <h2 className="mt-4 text-xl font-bold text-slate-900">{profile?.firstName + " " + profile?.lastName}</h2>
                 <p className="text-slate-500">{profile.companyName}</p>
                 
                 {profile.verificationStatus === 'verified' && (
@@ -236,11 +238,11 @@ export default function DealerProfilePage() {
                       {isEditing ? (
                         <Input 
                           name="name"
-                          value={editedProfile.name} 
+                          value={editedProfile.firstName} 
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.name}</p>
+                        <p className="text-slate-900">{profile.firstName}</p>
                       )}
                     </div>
                     <div>
@@ -363,7 +365,7 @@ export default function DealerProfilePage() {
                       <p className="text-slate-900">{profile.address}</p>
                     )}
                   </div>
-                  
+           
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <label className="text-sm font-medium text-slate-700 mb-1 block">City</label>
@@ -420,7 +422,7 @@ export default function DealerProfilePage() {
                           </div>
                         </div>
                         <div>
-                          <Badge className="bg-green-100 text-green-800 border-green-200">Uploaded</Badge>
+                        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Pending</Badge>
                         </div>
                       </div>
                       
@@ -435,7 +437,7 @@ export default function DealerProfilePage() {
                           </div>
                         </div>
                         <div>
-                          <Badge className="bg-green-100 text-green-800 border-green-200">Uploaded</Badge>
+                        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Pending</Badge>
                         </div>
                       </div>
                       
@@ -450,7 +452,7 @@ export default function DealerProfilePage() {
                           </div>
                         </div>
                         <div>
-                          <Badge className="bg-green-100 text-green-800 border-green-200">Uploaded</Badge>
+                        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Pending</Badge>
                         </div>
                       </div>
                       

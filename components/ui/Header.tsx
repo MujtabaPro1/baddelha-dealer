@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Car } from 'lucide-react';
 import { UserProfileMenu } from './UserProfileMenu';
+import { NotificationMenu } from './NotificationMenu';
 
 interface HeaderProps {
   title?: string;
@@ -28,6 +29,7 @@ export function Header({ title = 'Badelha Dealer', rightContent }: HeaderProps) 
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            <NotificationMenu />
             {rightContent || <UserProfileMenu />}
           </div>
         </div>

@@ -155,9 +155,22 @@ export default function CarAuctionPlatform() {
 
 
   useEffect(() => {
-   
+    // Initial fetch
     fetchAuctions();
+
   }, []);
+
+  useEffect(() => {
+    const pollInterval = setInterval(() => {
+      // Only continue polling if there are auctions with cars
+      if (cars.length > 0) {
+        fetchAuctions();
+      }
+    }, 30000); // Poll every 30 seconds
+    
+    // Clean up interval when component unmounts
+    return () => clearInterval(pollInterval);
+  }, [cars]);
 
 
   // Show loading spinner while checking authentication
@@ -746,7 +759,7 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
         <div className={`text-center py-2 rounded-lg border ${timeRemainingSeconds > 0 ? 'border-[#e9ecef]' : 'border-[#e9ecef]'} ${timeRemainingSeconds === 0 ? 'bg-[#f8f9fa] text-[#7f8c8d]' : 'bg-[#f8f9fa] text-[#2c3e50]'}`}>
           {timeRemainingSeconds > 0 ? (
             <span className="font-semibold">
-              Ends in {timeRemainingText}
+              AUCTION RUNNING
             </span>
           ) : (
             <span className="font-bold">AUCTION ENDED</span>

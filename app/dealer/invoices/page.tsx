@@ -28,75 +28,9 @@ export default function DealerInvoicesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
+  const [invoices, setInvoices] = useState([]);
   
-  // Dummy data for invoices
-  const dummyInvoices: Invoice[] = [
-    {
-      id: 'inv-001',
-      carId: 'car-001',
-      carMake: 'Toyota',
-      carModel: 'Land Cruiser',
-      carYear: 2022,
-      carImage: 'https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?auto=compress&cs=tinysrgb&w=800',
-      amount: 180000,
-      status: 'paid',
-      date: '2025-08-15',
-      dueDate: '2025-08-30',
-      invoiceNumber: 'INV-20250815-001',
-    },
-    {
-      id: 'inv-002',
-      carId: 'car-002',
-      carMake: 'Mercedes-Benz',
-      carModel: 'S-Class',
-      carYear: 2023,
-      carImage: 'https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?auto=compress&cs=tinysrgb&w=800',
-      amount: 350000,
-      status: 'pending',
-      date: '2025-08-25',
-      dueDate: '2025-09-10',
-      invoiceNumber: 'INV-20250825-002',
-    },
-    {
-      id: 'inv-003',
-      carId: 'car-003',
-      carMake: 'BMW',
-      carModel: 'X7',
-      carYear: 2023,
-      carImage: 'https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?auto=compress&cs=tinysrgb&w=800',
-      amount: 290000,
-      status: 'overdue',
-      date: '2025-08-01',
-      dueDate: '2025-08-15',
-      invoiceNumber: 'INV-20250801-003',
-    },
-    {
-      id: 'inv-004',
-      carId: 'car-004',
-      carMake: 'Lexus',
-      carModel: 'LX',
-      carYear: 2024,
-      carImage: 'https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?auto=compress&cs=tinysrgb&w=800',
-      amount: 320000,
-      status: 'paid',
-      date: '2025-07-20',
-      dueDate: '2025-08-05',
-      invoiceNumber: 'INV-20250720-004',
-    },
-    {
-      id: 'inv-005',
-      carId: 'car-005',
-      carMake: 'Audi',
-      carModel: 'Q8',
-      carYear: 2023,
-      carImage: 'https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?auto=compress&cs=tinysrgb&w=800',
-      amount: 275000,
-      status: 'pending',
-      date: '2025-08-30',
-      dueDate: '2025-09-15',
-      invoiceNumber: 'INV-20250830-005',
-    },
-  ];
+  
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
@@ -119,7 +53,7 @@ export default function DealerInvoicesPage() {
     }
   };
 
-  const filteredInvoices = dummyInvoices.filter(invoice =>
+  const filteredInvoices = invoices.filter((invoice: Invoice) =>
     `${invoice.carMake} ${invoice.carModel} ${invoice.carYear} ${invoice.invoiceNumber}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -137,21 +71,11 @@ export default function DealerInvoicesPage() {
           <h1 className="text-3xl font-bold text-slate-900">Dealer Invoices</h1>
           <p className="text-slate-500 mt-1">Manage your invoices and payments</p>
         </div>
-        <Button className="mt-4 md:mt-0 bg-[#f78f37] hover:bg-[#e67d25] text-white">
-          <FileText className="w-4 h-4 mr-2" />
-          Generate New Invoice
-        </Button>
       </div>
 
       <div className="mb-8">
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid grid-cols-4 mb-8">
-            <TabsTrigger value="all">All Invoices</TabsTrigger>
-            <TabsTrigger value="paid">Paid</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="overdue">Overdue</TabsTrigger>
-          </TabsList>
-          
+         
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -233,7 +157,7 @@ export default function DealerInvoicesPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <div className="text-3xl font-bold">{dummyInvoices.length}</div>
+              <div className="text-3xl font-bold">{invoices.length}</div>
               <div className="p-2 bg-blue-100 rounded-full">
                 <FileText className="w-6 h-6 text-blue-600" />
               </div>
@@ -249,9 +173,9 @@ export default function DealerInvoicesPage() {
             <div className="flex items-center justify-between">
               <div className="text-3xl font-bold">
                 {formatCurrency(
-                  dummyInvoices
-                    .filter(invoice => invoice.status === 'pending' || invoice.status === 'overdue')
-                    .reduce((sum, invoice) => sum + invoice.amount, 0)
+                  invoices
+                    .filter((invoice: Invoice) => invoice.status === 'pending' || invoice.status === 'overdue')
+                    .reduce((sum: number, invoice: Invoice) => sum + invoice.amount, 0)
                 )}
               </div>
               <div className="p-2 bg-yellow-100 rounded-full">
@@ -269,9 +193,9 @@ export default function DealerInvoicesPage() {
             <div className="flex items-center justify-between">
               <div className="text-3xl font-bold">
                 {formatCurrency(
-                  dummyInvoices
-                    .filter(invoice => invoice.status === 'paid')
-                    .reduce((sum, invoice) => sum + invoice.amount, 0)
+                  invoices
+                    .filter((invoice: Invoice) => invoice.status === 'paid')
+                    .reduce((sum: number, invoice: Invoice) => sum + invoice.amount, 0)
                 )}
               </div>
               <div className="p-2 bg-green-100 rounded-full">
