@@ -48,7 +48,7 @@ export default function NotificationsPage() {
 
   const filteredNotifications = activeTab === 'all' 
     ? notifications 
-    : notifications.filter(notification => notification.type === activeTab);
+    : notifications.filter((notification: any) => notification.type === activeTab);
 
   return (
     <>
@@ -97,7 +97,7 @@ export default function NotificationsPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {filteredNotifications.map((notification) => (
+                {filteredNotifications.map((notification:any) => (
                   <Card key={notification.id} className={`overflow-hidden transition-all duration-300 ${!notification.isRead ? 'border-l-4 border-l-[#3498db]' : ''}`}>
                     <CardContent className="p-4">
                       <div className="flex items-start gap-4">

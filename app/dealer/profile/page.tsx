@@ -63,7 +63,7 @@ export default function DealerProfilePage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setEditedProfile(prev => ({
+    setEditedProfile((prev: any) => ({
       ...prev,
       [name]: value
     }));

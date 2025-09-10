@@ -94,7 +94,7 @@ export default function DealerInvoicesPage() {
 
           <TabsContent value="all" className="mt-0">
             <div className="grid grid-cols-1 gap-6">
-              {filteredInvoices.map((invoice) => (
+              {filteredInvoices.map((invoice: any) => (
                 <InvoiceCard 
                   key={invoice.id} 
                   invoice={invoice} 
@@ -108,7 +108,7 @@ export default function DealerInvoicesPage() {
           
           <TabsContent value="paid" className="mt-0">
             <div className="grid grid-cols-1 gap-6">
-              {filteredInvoices.filter(invoice => invoice.status === 'paid').map((invoice) => (
+              {filteredInvoices.filter((invoice:any) => invoice.status === 'paid').map((invoice:any) => (
                 <InvoiceCard 
                   key={invoice.id} 
                   invoice={invoice} 
@@ -122,7 +122,7 @@ export default function DealerInvoicesPage() {
           
           <TabsContent value="pending" className="mt-0">
             <div className="grid grid-cols-1 gap-6">
-              {filteredInvoices.filter(invoice => invoice.status === 'pending').map((invoice) => (
+              {filteredInvoices.filter((invoice:any) => invoice.status === 'pending').map((invoice:any) => (
                 <InvoiceCard 
                   key={invoice.id} 
                   invoice={invoice} 
@@ -136,7 +136,7 @@ export default function DealerInvoicesPage() {
           
           <TabsContent value="overdue" className="mt-0">
             <div className="grid grid-cols-1 gap-6">
-              {filteredInvoices.filter(invoice => invoice.status === 'overdue').map((invoice) => (
+              {filteredInvoices.filter((invoice:any) => invoice.status === 'overdue').map((invoice:any) => (
                 <InvoiceCard 
                   key={invoice.id} 
                   invoice={invoice} 
