@@ -56,7 +56,7 @@ export default function DealerBidsPage() {
       console.error('Error fetching bids:', error);
       setError('Failed to fetch bids. Please try again later.');
       // Use sample data for development
-      setBids(sampleBids);
+      setBids([]);
     } finally {
       setLoading(false);
     }
