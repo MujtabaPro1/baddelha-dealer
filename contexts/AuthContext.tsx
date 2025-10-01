@@ -9,14 +9,6 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signup: (userData: {
-    email: string;
-    password: string;
-    name: string;
-    dealershipName: string;
-    phone: string;
-    licenseNumber: string;
-  }) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<User>) => Promise<{ success: boolean; error?: string }>;
 }
@@ -106,25 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signup = async (userData: {
-    email: string;
-    password: string;
-    name: string;
-    dealershipName: string;
-    phone: string;
-    licenseNumber: string;
-  }) => {
-    try {
-      const result = await authService.signup(userData);
-      if (result.success && result.user) {
-        setUser(result.user);
-      }
-      return result;
-    } catch (error) {
-      console.error('Signup error:', error);
-      return { success: false, error: 'An unexpected error occurred' };
-    }
-  };
+  // Signup is now handled directly by the SignupForm component
 
 
 
@@ -158,7 +132,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated: !!user,
         isLoading,
         login,
-        signup,
         logout,
         updateProfile,
       }}

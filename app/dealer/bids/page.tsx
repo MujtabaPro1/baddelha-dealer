@@ -217,7 +217,7 @@ export default function DealerBidsPage() {
           <CardContent>
             <div className="flex items-center justify-between">
               <div className="text-3xl font-bold">
-                {Math.round((bids?.filter(bid => bid.status === 'won' || bid.status === 'accepted').length / bids?.length) * 100)}%
+                {bids?.length ? Math.round((bids?.filter(bid => bid.status === 'won' || bid.status === 'accepted').length / bids?.length) * 100) : 0}%
               </div>
               <div className="p-2 bg-green-100 rounded-full">
                 <CheckCircle className="w-6 h-6 text-green-600" />

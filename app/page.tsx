@@ -569,7 +569,7 @@ export default function CarAuctionPlatform() {
 
         {/* Summary Stats */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="bg-gradient-to-br from-[#2c3e50] to-[#34495e] text-white border-0 shadow-md">
+          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -581,7 +581,7 @@ export default function CarAuctionPlatform() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-[#2ecc71] to-[#27ae60] text-white border-0 shadow-md">
+          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -593,7 +593,7 @@ export default function CarAuctionPlatform() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-[#f39c12] to-[#e67e22] text-white border-0 shadow-md">
+          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -605,7 +605,7 @@ export default function CarAuctionPlatform() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-[#3498db] to-[#2980b9] text-white border-0 shadow-md">
+          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>

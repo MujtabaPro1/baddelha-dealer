@@ -15,7 +15,7 @@ export function Header({ title = 'Badelha Dealer', rightContent }: HeaderProps) 
   const router = useRouter();
 
   return (
-    <header className="bg-[#2c3e50] shadow-lg border-b border-[#34495e] sticky top-0 z-50">
+    <header className="bg-[#4b535b] shadow-lg border-b border-[#34495e] sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">

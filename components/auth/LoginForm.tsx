@@ -72,7 +72,7 @@ export function LoginForm({ onLogin, onSwitchToSignup, loading, error }: LoginFo
             </div>
           </div>
           
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full bg-gradient-to-br from-[#4b535b] to-[#4b535b]" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -96,11 +96,6 @@ export function LoginForm({ onLogin, onSwitchToSignup, loading, error }: LoginFo
             </p>
           </div>
           
-          <div className="text-center pt-4 border-t">
-            <p className="text-xs text-muted-foreground">
-              Demo credentials: john@premiumautos.com / password
-            </p>
-          </div>
         </form>
       </CardContent>
     </Card>

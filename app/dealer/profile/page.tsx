@@ -57,7 +57,22 @@ export default function DealerProfilePage() {
  
 
   // Dummy data for dealer profile
-  const [profile, setProfile] = useState<any>({});
+  const [profile, setProfile] = useState<any>({
+    address: '123 King Fahd Road',
+    city: 'Riyadh',
+    country: 'Saudi Arabia',
+    postalCode: '12345',
+    companyName: 'Badelha Motors',
+    taxId: 'TX-9876543210',
+    licenseNumber: 'DL-2025-0123',
+    bio: 'Premium car dealer with over 15 years of experience in luxury and high-end vehicles. Specializing in import and export of exclusive models across the Middle East.',
+    avatar: 'https://img3.stockfresh.com/files/k/kraska/m/97/808337_stock-photo-user-icon.jpg',
+    website: 'www.badelha-motors.com',
+    foundedYear: 0,
+    totalSales: 0,
+    rating: 5,
+    verificationStatus: 'verified',
+  });
 
   const [editedProfile, setEditedProfile] = useState<any>({...profile});
 
@@ -90,7 +105,7 @@ export default function DealerProfilePage() {
         </div>
         {!isEditing ? (
           <Button 
-            className="mt-4 md:mt-0 bg-[#f78f37] hover:bg-[#e67d25] text-white"
+            className="mt-4 md:mt-0 bg-gradient-to-r from-amber-500 to-amber-400 text-white"
             onClick={() => setIsEditing(true)}
           >
             <Edit className="w-4 h-4 mr-2" />
@@ -122,7 +137,7 @@ export default function DealerProfilePage() {
                 <div className="relative">
                   <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
                     <AvatarImage src={profile.avatar} />
-                    <AvatarFallback>{profile?.firstName?.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{profile?.firstName?.charAt(0) || 'Dealer'}</AvatarFallback>
                   </Avatar>
                   {isEditing && (
                     <div className="absolute bottom-0 right-0">
@@ -132,8 +147,8 @@ export default function DealerProfilePage() {
                     </div>
                   )}
                 </div>
-                <h2 className="mt-4 text-xl font-bold text-slate-900">{profile?.firstName + " " + profile?.lastName}</h2>
-                <p className="text-slate-500">{profile.companyName}</p>
+                <h2 className="mt-4 text-xl font-bold text-slate-900">{profile?.firstName ? profile?.firstName + " " + profile?.lastName : 'User'}</h2>
+                <p className="text-slate-500">{profile?.companyName || 'N/A'}</p>
                 
                 {profile.verificationStatus === 'verified' && (
                   <div className="flex items-center mt-2 bg-green-50 text-green-700 px-3 py-1 rounded-full">
@@ -149,33 +164,33 @@ export default function DealerProfilePage() {
                       className={`w-5 h-5 ${i < Math.floor(profile.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-200'}`} 
                     />
                   ))}
-                  <span className="ml-2 text-slate-700 font-medium">{profile.rating}</span>
+                  <span className="ml-2 text-slate-700 font-medium">{profile.rating || 'N/A'}</span>
                 </div>
               </div>
               
               <div className="mt-6 space-y-4">
                 <div className="flex items-center text-slate-600">
                   <Mail className="w-5 h-5 mr-3 text-slate-400" />
-                  <span>{profile.email}</span>
+                  <span>{profile.email || 'N/A'}</span>
                 </div>
                 <div className="flex items-center text-slate-600">
                   <Phone className="w-5 h-5 mr-3 text-slate-400" />
-                  <span>{profile.phone}</span>
+                  <span>{profile.phone || 'N/A'}</span>
                 </div>
                 <div className="flex items-center text-slate-600">
                   <MapPin className="w-5 h-5 mr-3 text-slate-400" />
-                  <span>{profile.city}, {profile.country}</span>
+                  <span>{profile.city || 'N/A'}, {profile.country || 'N/A'}</span>
                 </div>
                 <div className="flex items-center text-slate-600">
                   <Building className="w-5 h-5 mr-3 text-slate-400" />
-                  <span>Est. {profile.foundedYear}</span>
+                  <span>Est. {profile.foundedYear || 'N/A'}</span>
                 </div>
               </div>
               
               <div className="mt-6 pt-6 border-t border-slate-100">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-slate-900">{profile.totalSales}</p>
+                    <p className="text-2xl font-bold text-slate-900">{profile.totalSales || 'N/A'}</p>
                     <p className="text-sm text-slate-500">Total Sales</p>
                   </div>
                   <div className="text-center">
@@ -183,7 +198,7 @@ export default function DealerProfilePage() {
                     <p className="text-sm text-slate-500">Years Active</p>
                   </div>
                 </div>
-              </div>
+              </div>  
             </CardContent>
           </Card>
           
@@ -194,11 +209,11 @@ export default function DealerProfilePage() {
             <CardContent className="space-y-4">
               <div>
                 <p className="text-sm text-slate-500">License Number</p>
-                <p className="font-medium">{profile.licenseNumber}</p>
+                <p className="font-medium">{profile.licenseNumber || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-sm text-slate-500">Tax ID</p>
-                <p className="font-medium">{profile.taxId}</p>
+                <p className="font-medium">{profile.taxId || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-sm text-slate-500">Verification Status</p>
@@ -210,7 +225,7 @@ export default function DealerProfilePage() {
                     : 'text-red-600'
                 }`}>
                   <Shield className="w-4 h-4 mr-1" />
-                  <span className="font-medium capitalize">{profile.verificationStatus}</span>
+                  <span className="font-medium capitalize">{profile.verificationStatus || 'N/A'}</span>
                 </div>
               </div>
             </CardContent>
@@ -242,7 +257,7 @@ export default function DealerProfilePage() {
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.firstName}</p>
+                        <p className="text-slate-900">{profile.firstName || 'N/A'}</p>
                       )}
                     </div>
                     <div>
@@ -255,7 +270,7 @@ export default function DealerProfilePage() {
                           type="email"
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.email}</p>
+                        <p className="text-slate-900">{profile.email || 'N/A'}</p>
                       )}
                     </div>
                     <div>
@@ -267,7 +282,7 @@ export default function DealerProfilePage() {
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.phone}</p>
+                        <p className="text-slate-900">{profile.phone || 'N/A'}</p>
                       )}
                     </div>
                     <div>
@@ -275,11 +290,11 @@ export default function DealerProfilePage() {
                       {isEditing ? (
                         <Input 
                           name="website"
-                          value={editedProfile.website} 
+                          value={editedProfile.website}  
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.website}</p>
+                        <p className="text-slate-900">{profile.website || 'N/A'}</p>
                       )}
                     </div>
                   </div>
@@ -294,7 +309,7 @@ export default function DealerProfilePage() {
                         rows={4}
                       />
                     ) : (
-                      <p className="text-slate-900">{profile.bio}</p>
+                      <p className="text-slate-900">{profile.bio || 'N/A'}</p>
                     )}
                   </div>
                 </TabsContent>
@@ -310,7 +325,7 @@ export default function DealerProfilePage() {
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.companyName}</p>
+                        <p className="text-slate-900">{profile.companyName || 'N/A'}</p>
                       )}
                     </div>
                     <div>
@@ -322,7 +337,7 @@ export default function DealerProfilePage() {
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.taxId}</p>
+                        <p className="text-slate-900">{profile.taxId || 'N/A'}</p>
                       )}
                     </div>
                     <div>
@@ -334,7 +349,7 @@ export default function DealerProfilePage() {
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.licenseNumber}</p>
+                        <p className="text-slate-900">{profile.licenseNumber || 'N/A'}</p>
                       )}
                     </div>
                     <div>
@@ -347,7 +362,7 @@ export default function DealerProfilePage() {
                           type="number"
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.foundedYear}</p>
+                        <p className="text-slate-900">{profile.foundedYear || 'N/A'}</p>
                       )}
                     </div>
                   </div>
@@ -362,7 +377,7 @@ export default function DealerProfilePage() {
                         rows={2}
                       />
                     ) : (
-                      <p className="text-slate-900">{profile.address}</p>
+                      <p className="text-slate-900">{profile.address || 'N/A'}</p>
                     )}
                   </div>
            
@@ -376,7 +391,7 @@ export default function DealerProfilePage() {
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.city}</p>
+                        <p className="text-slate-900">{profile.city || 'N/A'}</p>
                       )}
                     </div>
                     <div>
@@ -388,7 +403,7 @@ export default function DealerProfilePage() {
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.country}</p>
+                        <p className="text-slate-900">{profile.country || 'N/A'}</p>
                       )}
                     </div>
                     <div>
@@ -400,7 +415,7 @@ export default function DealerProfilePage() {
                           onChange={handleInputChange}
                         />
                       ) : (
-                        <p className="text-slate-900">{profile.postalCode}</p>
+                        <p className="text-slate-900">{profile.postalCode || 'N/A'}</p>
                       )}
                     </div>
                   </div>

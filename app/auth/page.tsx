@@ -12,7 +12,7 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { login, signup, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
   // If already authenticated, redirect to main page
@@ -39,29 +39,7 @@ export default function AuthPage() {
     }
   };
 
-  const handleSignup = async (userData: {
-    email: string;
-    password: string;
-    name: string;
-    dealershipName: string;
-    phone: string;
-    licenseNumber: string;
-  }) => {
-    setError(null);
-    setLoading(true);
-    try {
-      const result = await signup(userData);
-      if (!result.success) {
-        setError(result.error || 'Signup failed');
-      } else {
-        router.push('/');
-      }
-    } catch (err) {
-      setError('An unexpected error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // We don't need the handleSignup function anymore as the SignupForm now handles the API call directly
 
   // Show loading spinner while checking authentication
   if (authLoading) {
@@ -79,7 +57,7 @@ export default function AuthPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center mb-8">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#41575F] to-[#41575F] rounded-lg flex items-center justify-center">
             <Car className="w-7 h-7 text-white" />
           </div>
           <div className="ml-3">
@@ -97,10 +75,7 @@ export default function AuthPage() {
           />
         ) : (
           <SignupForm
-            onSignup={handleSignup}
             onSwitchToLogin={() => setIsLogin(true)}
-            loading={loading}
-            error={error}
           />
         )}
       </div>
