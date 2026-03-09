@@ -47,7 +47,7 @@ export function LoginForm({ onLogin, onSwitchToSignup, loading, error }: LoginFo
               <Input
                 id="email"
                 type="email"
-                placeholder="john@premiumautos.com"
+                placeholder="x@baddelha.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10"
