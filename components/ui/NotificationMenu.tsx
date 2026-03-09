@@ -103,6 +103,30 @@ export function NotificationMenu() {
                     </div>
                   </div>
                   <p className="text-sm text-[#7f8c8d] mt-1">{notification.message}</p>
+                  {notification.parsedData && (
+                    <div className="mt-2 p-2 bg-[#f8f9fa] rounded-md border border-[#e9ecef] w-full">
+                      <div className="text-xs text-[#2c3e50] space-y-1">
+                        {notification.parsedData.winningAmount && (
+                          <div className="flex justify-between">
+                            <span className="font-medium">Winning Amount:</span>
+                            <span className="text-[#2ecc71] font-bold">${notification.parsedData.winningAmount.toLocaleString()}</span>
+                          </div>
+                        )}
+                        {notification.parsedData.carId && (
+                          <div className="flex justify-between">
+                            <span className="font-medium">Car ID:</span>
+                            <span className="font-mono text-[#7f8c8d]">{notification.parsedData.carId.substring(0, 8)}...</span>
+                          </div>
+                        )}
+                        {notification.parsedData.auctionId && (
+                          <div className="flex justify-between">
+                            <span className="font-medium">Auction ID:</span>
+                            <span className="font-mono text-[#7f8c8d]">{notification.parsedData.auctionId.substring(0, 8)}...</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   <div className="flex justify-between w-full mt-2 text-xs text-[#7f8c8d]">
                     <span>{format(notification.createdAt, 'MMM dd, yyyy HH:mm')}</span>
                   </div>

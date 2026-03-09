@@ -52,3 +52,21 @@ export async function loginUser(email: string, password: string) {
     throw error;
   }
 }
+
+/**
+ * Fetch all notifications
+ */
+export async function fetchNotifications() {
+  try {
+    const response = await axiosInstance.get(`/1.0/notification/find-all`);
+
+    if (!response.data) {
+      throw new Error('Failed to fetch notifications');
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+}

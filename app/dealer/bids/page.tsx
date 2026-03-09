@@ -39,17 +39,22 @@ export default function DealerBidsPage() {
     fetchBids();
   }, []);
 
+
+  useEffect(() => {
+    fetchBids();
+  }, [searchTerm]);
+
   const fetchBids = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axiosInstance.get('/1.0/auction/bid/placed');
+      let searchTerm = '';
+      if(searchTerm){
+        searchTerm = `&search=${searchTerm}`;
+      }
+      const response = await axiosInstance.get(`/1.0/auction/bid/placed${searchTerm}`);
       if (response?.data) {
         console.log(response.data);
-        // In a real implementation, we would use the actual API data
-        // setBids(response.data);
-        
-        // For now, use our sample data
         setBids(response.data);
       }
     } catch (error) {
@@ -113,10 +118,6 @@ export default function DealerBidsPage() {
                 className="pl-10 h-12 border-slate-300 focus:border-[#3498db] focus:ring-[#3498db]"
               />
             </div>
-            <Button variant="outline" className="h-12 px-6 border-slate-300 hover:bg-slate-50">
-              <Filter className="w-5 h-5 mr-2" />
-              Filters
-            </Button>
           </div>
 
           {loading ? (

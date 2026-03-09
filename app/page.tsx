@@ -76,6 +76,10 @@ export default function CarAuctionPlatform() {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedCarDetails, setSelectedCarDetails] = useState<Car | null>(null);
   const [bidAmount, setBidAmount] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [limit] = useState(10);
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
   
@@ -85,12 +89,23 @@ export default function CarAuctionPlatform() {
       router.push('/auth');
     }
   }, [isAuthenticated, authLoading, router]);
-  
 
-  const fetchAuctions = async () => {
+  useEffect(() => {
+    fetchAuctions(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchAuctions(currentPage);
+  }, [searchTerm]);
+  
+  const fetchAuctions = async (page: number = 1) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/1.0/auction?status=LIVE&search=&page=1&limit=10');
+      
+      if(searchTerm){
+        
+      }
+      const response = await axiosInstance.get(`/1.0/auction?status=LIVE&search=${searchTerm}&page=${page}&limit=${limit}`);
       
       if(!response?.data){
         throw new Error('Failed to fetch auction data');
@@ -142,6 +157,9 @@ export default function CarAuctionPlatform() {
         });
         
         setCars(mappedCars);
+        setTotalItems(response.data.total ?? 0);
+        setTotalPages(response.data.lastPage ?? 1);
+        setCurrentPage(response.data.page ?? page);
       } else {
         console.error('Invalid API response format:', response.data);
       }
@@ -156,7 +174,7 @@ export default function CarAuctionPlatform() {
 
   useEffect(() => {
     // Initial fetch
-    fetchAuctions();
+    fetchAuctions(1);
 
   }, []);
 
@@ -164,13 +182,13 @@ export default function CarAuctionPlatform() {
     const pollInterval = setInterval(() => {
       // Only continue polling if there are auctions with cars
       if (cars.length > 0) {
-        fetchAuctions();
+        fetchAuctions(currentPage);
       }
     }, 30000); // Poll every 30 seconds
     
     // Clean up interval when component unmounts
     return () => clearInterval(pollInterval);
-  }, [cars]);
+  }, [cars, currentPage]);
 
 
   // Show loading spinner while checking authentication
@@ -221,8 +239,61 @@ export default function CarAuctionPlatform() {
       {/* Header */}
       <Header title="Live Auction" rightContent={<UserProfileMenu />} />
 
+
       {/* Search and Filters */}
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Summary Stats */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[#f8f9fa] text-sm">Total Vehicles</p>
+                  <p className="text-3xl font-bold">{cars.length}</p>
+                </div>
+                <Car className="w-8 h-8 text-[#f8f9fa]" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[#f8f9fa] text-sm">Active Auctions</p>
+                  <p className="text-3xl font-bold">{cars.filter(car => car.timeRemaining > 0).length}</p>
+                </div>
+                <Timer className="w-8 h-8 text-[#f8f9fa]" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[#f8f9fa] text-sm">Total Bids</p>
+                  <p className="text-3xl font-bold">{cars.reduce((sum, car) => sum + car.bidCount, 0)}</p>
+                </div>
+                <TrendingUp className="w-8 h-8 text-[#f8f9fa]" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[#f8f9fa] text-sm">Avg. Bid Value</p>
+                  <p className="text-3xl font-bold">
+                    {cars?.length ? formatCurrency(cars.reduce((sum, car) => sum + car.currentBid, 0) / cars.length) : '0'}
+                  </p>
+                </div>
+                <DollarSign className="w-8 h-8 text-[#f8f9fa]" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7f8c8d] w-5 h-5" />
@@ -233,10 +304,10 @@ export default function CarAuctionPlatform() {
               className="pl-10 h-12 border-[#e9ecef] focus:border-[#3498db] focus:ring-[#3498db]"
             />
           </div>
-          <Button variant="outline" className="h-12 px-6 border-[#e9ecef] bg-white hover:bg-[#f8f9fa] text-[#2c3e50]">
+          {/* <Button variant="outline" className="h-12 px-6 border-[#e9ecef] bg-white hover:bg-[#f8f9fa] text-[#2c3e50]">
             <Filter className="w-5 h-5 mr-2" />
             Filters
-          </Button>
+          </Button> */}
         </div>
 
         {/* Loading State */}
@@ -252,19 +323,58 @@ export default function CarAuctionPlatform() {
             </div>
           </div>
         ) : (
-          /* Auction Grid */
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-          {filteredCars.map((car) => (
+          <>
+            {/* Auction Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+              {filteredCars.map((car) => (
                 <CarCard 
-                openCarDetails={() => openCarDetails(car)}
-                placeBid={placeBid}
-                bidAmount={bidAmount}
-                setBidAmount={setBidAmount}
-                selectedCar={selectedCar}
-                setSelectedCar={setSelectedCar}
-                key={car.id} car={car} />
-          ))}
-        </div>
+                  openCarDetails={() => openCarDetails(car)}
+                  placeBid={placeBid}
+                  bidAmount={bidAmount}
+                  setBidAmount={setBidAmount}
+                  selectedCar={selectedCar}
+                  setSelectedCar={setSelectedCar}
+                  key={car.id}
+                  car={car}
+                />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
+              <div className="text-sm text-[#7f8c8d]">
+                Showing page {currentPage} of {totalPages} ({totalItems} vehicles)
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  disabled={currentPage <= 1}
+                  onClick={() => {
+                    const newPage = currentPage - 1;
+                    if (newPage >= 1) {
+                      fetchAuctions(newPage);
+                    }
+                  }}
+                  className="border-[#e9ecef] bg-white hover:bg-[#f8f9fa] text-[#2c3e50]"
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => {
+                    const newPage = currentPage + 1;
+                    if (newPage <= totalPages) {
+                      fetchAuctions(newPage);
+                    }
+                  }}
+                  className="border-[#e9ecef] bg-white hover:bg-[#f8f9fa] text-[#2c3e50]"
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          </>
         )}
 
         {/* Car Details Modal */}
@@ -567,58 +677,7 @@ export default function CarAuctionPlatform() {
           </DialogContent>
         </Dialog>
 
-        {/* Summary Stats */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[#f8f9fa] text-sm">Total Vehicles</p>
-                  <p className="text-3xl font-bold">{cars.length}</p>
-                </div>
-                <Car className="w-8 h-8 text-[#f8f9fa]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[#f8f9fa] text-sm">Active Auctions</p>
-                  <p className="text-3xl font-bold">{cars.filter(car => car.timeRemaining > 0).length}</p>
-                </div>
-                <Timer className="w-8 h-8 text-[#f8f9fa]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[#f8f9fa] text-sm">Total Bids</p>
-                  <p className="text-3xl font-bold">{cars.reduce((sum, car) => sum + car.bidCount, 0)}</p>
-                </div>
-                <TrendingUp className="w-8 h-8 text-[#f8f9fa]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[#f8f9fa] text-sm">Avg. Bid Value</p>
-                  <p className="text-3xl font-bold">
-                    {cars?.length ? formatCurrency(cars.reduce((sum, car) => sum + car.currentBid, 0) / cars.length) : '0'}
-                  </p>
-                </div>
-                <DollarSign className="w-8 h-8 text-[#f8f9fa]" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        
       </div>
     </div>
   );

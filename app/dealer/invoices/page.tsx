@@ -86,10 +86,6 @@ export default function DealerInvoicesPage() {
                 className="pl-10 h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
-            <Button variant="outline" className="h-12 px-6 border-slate-300 hover:bg-slate-50">
-              <Filter className="w-5 h-5 mr-2" />
-              Filters
-            </Button>
           </div>
 
           <TabsContent value="all" className="mt-0">

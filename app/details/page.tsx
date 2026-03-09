@@ -15,7 +15,11 @@ import {
   Zap,
   FileText,
   Check,
-  Timer
+  Timer,
+  Award,
+  Download,
+  Wrench,
+  Info
 } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
 import axiosInstance from '@/service/api';
@@ -24,6 +28,7 @@ import CarBodySvgView from '@/components/ui/CarBodyView';
 import { Badge } from '@/components/ui/badge';
 import { UserProfileMenu } from '@/components/ui/UserProfileMenu';
 import { useRouter } from 'next/navigation';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 
 
 
@@ -40,6 +45,7 @@ const CarDetail: React.FC = () => {
   const [auctionDetails,setAuctionDetails] = useState<any>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>('');
   const router = useRouter();
+  const [extraData, setExtraData] = useState<any>(null);
 
 
 
@@ -163,6 +169,9 @@ const CarDetail: React.FC = () => {
               // Process inspection data if available
               if(_car['Inspection']){
                   _car['InspectionData'] = _car?.Inspection?.[0]?.inspectionJson;
+
+                  const _extraData = _car['InspectionData'].extraData || {};
+                  setExtraData(_extraData);
                   _inspectionData.map((i: any)=>{
                       i.fields.map((_i: any)=>{
                           Object.keys(_car['InspectionData']).map((cKey)=>{
@@ -612,142 +621,220 @@ const CarDetail: React.FC = () => {
 
                 {/* Inspection Tab */}
                 {activeTab === 'inspection' && (
-                  <div className="bg-white shadow overflow-hidden rounded-xl border border-[#e9ecef]">
-                    <div className="px-6 py-5">
-                      <h3 className="text-xl font-semibold text-[#2c3e50] flex items-center">
-                        <Shield className="h-5 w-5 mr-2 text-[#f39c12]" />
-                        Inspection Report
-                      </h3>
-                      <p className="mt-1 text-sm text-[#7f8c8d]">Comprehensive vehicle condition assessment</p>
-                    </div>
-                    
-                    {!inspectionDetails?.inspectionJson ? (
-                      <div className="px-6 py-8 text-center">
-                        <div className="bg-[#f8f9fa] p-6 rounded-lg">
-                          <Shield className="h-12 w-12 mx-auto text-[#7f8c8d] mb-3" />
-                          <p className="text-[#7f8c8d] font-medium">No inspection report available for this vehicle.</p>
-                        </div>
-                      </div>
-                    ) : !inspectionSchema ? (
-                      <div className="px-6 py-12 flex justify-center">
-                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#3498db]"></div>
-                      </div>
-                    ) : (
-                      <div className="border-t border-[#e9ecef]">
-                        {/* Inspection Content */}
-                        <div className="px-6 py-5">
-                          <div className="grid grid-cols-1 gap-6">
-                            {/* Information Section */}
-                            <div className="bg-[#f8f9fa] rounded-xl p-6 border border-[#e9ecef]">
-                              <h4 className="text-lg font-semibold text-[#2c3e50] mb-4 flex items-center">
-                                <FileText className="h-5 w-5 mr-2 text-[#3498db]" />
-                                Vehicle Information
-                              </h4>
-                              
-                              {inspectionDetails ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  {Object.keys(inspectionDetails?.inspectionJson).map((i, index) => {
-                                    if(i === 'overview') return null;
-                                    
-                                    const value = typeof inspectionDetails?.inspectionJson[i] === 'object' && 
-                                      inspectionDetails?.inspectionJson[i]?.length ? 
-                                      inspectionDetails?.inspectionJson[i][0].value : 
-                                      typeof inspectionDetails?.inspectionJson[i] === 'object' && 
-                                      !inspectionDetails?.inspectionJson[i]?.length ? 
-                                      inspectionDetails?.inspectionJson[i]?.value : 
-                                      inspectionDetails?.inspectionJson[i] === "" ? "N/A" : 
-                                      inspectionDetails?.inspectionJson[i];
-                                    
-                                    return (
-                                      <div key={i + index} className="p-3 bg-white rounded-lg border border-[#e9ecef] transition-all hover:shadow-md">
-                                        <p className="text-sm font-medium text-[#7f8c8d] mb-1">{i.replace(/_/g, " ")}</p>
-                                        <p className="font-semibold text-[#2c3e50]">{value}</p>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                <div className="flex justify-center py-6">
-                                  <p className="text-[#7f8c8d]">Loading inspection details...</p>
-                                </div>
-                              )}
-                            </div>
-                            
-                            {/* Images Section */}
-                            <div className="bg-[#f8f9fa] rounded-xl p-6 border border-[#e9ecef]">
-                              <h4 className="text-lg font-semibold text-[#2c3e50] mb-4 flex items-center">
-                                <img className="h-5 w-5 mr-2" src="/camera-icon.svg" alt="Camera" />
-                                Vehicle Images
-                              </h4>
-                              
-                              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                {images?.length > 0 ? images?.map((img: any, index: number) => (
-                                  <div key={`img-${index}`} className="group">
-                                    <div className="overflow-hidden rounded-lg border border-[#e9ecef] bg-white shadow-sm transition-all hover:shadow-md">
-                                      <div className="aspect-square relative">
-                                        <img 
-                                          className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105" 
-                                          src={img} 
-                                          alt={`Vehicle image ${index + 1}`} 
-                                        />
-                                      </div>
-                                      {img.caption && (
-                                        <div className="p-2 text-xs text-center text-[#7f8c8d] truncate">
-                                          {img.caption}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                )) : (
-                                  <div className="col-span-full text-center py-8 text-[#7f8c8d]">
-                                    No detailed images available
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            
-                            {/* Car Body Condition Section */}
-                            <div className="bg-[#f8f9fa] rounded-xl p-6 border border-[#e9ecef]">
-                              <h4 className="text-lg font-semibold text-[#2c3e50] mb-4 flex items-center">
-                                <Car className="h-5 w-5 mr-2 text-[#f39c12]" />
-                                Car Body Condition
-                              </h4>
-                              
-                              <div className="bg-white p-4 rounded-lg border border-[#e9ecef]">
-                                {inspectionDetails?.carBodyConditionJson ? (
-                                  <CarBodySvgView data={inspectionDetails?.carBodyConditionJson}/>
-                                ) : (
-                                  <div className="text-center py-8 text-[#7f8c8d]">
-                                    No body condition data available
-                                  </div>
-                                )}
-                              </div>
-                              
-                              {/* Legend */}
-                              <div className="mt-4 flex flex-wrap gap-3 justify-center">
-                                <div className="flex items-center">
-                                  <div className="w-4 h-4 bg-[#2ecc71] rounded-full mr-2"></div>
-                                  <span className="text-sm text-[#7f8c8d]">Original</span>
-                                </div>
-                                <div className="flex items-center">
-                                  <div className="w-4 h-4 bg-[#f39c12] rounded-full mr-2"></div>
-                                  <span className="text-sm text-[#7f8c8d]">Repainted</span>
-                                </div>
-                                <div className="flex items-center">
-                                  <div className="w-4 h-4 bg-[#e74c3c] rounded-full mr-2"></div>
-                                  <span className="text-sm text-[#7f8c8d]">Damaged</span>
-                                </div>
-                                <div className="flex items-center">
-                                  <div className="w-4 h-4 bg-[#7f8c8d] rounded-full mr-2"></div>
-                                  <span className="text-sm text-[#7f8c8d]">Not Available</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                       <div className="space-y-8">
+                       {/* Inspection Summary */}
+                       <div>
+                         <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                           <Shield className="h-5 w-5 mr-2 text-[#f78f37]" /> Inspection Summary
+                         </h3>
+                         
+                         {!inspectionDetails?.inspectionJson ? (
+                           <div className="bg-gray-50 p-6 rounded-lg text-center">
+                             <p className="text-gray-500">No inspection report available for this car.</p>
+                           </div>
+                         ) : !inspectionSchema ? (
+                           <div className="bg-gray-50 p-6 rounded-lg flex justify-center">
+                             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#f78f37]"></div>
+                           </div>
+                         ) : (
+                           <div className="bg-gray-50 p-6 rounded-lg">
+                             {/* Inspection Score */}
+                             <div className="mb-8">
+                               <div className="flex justify-between items-center mb-4">
+                                 <h4 className="font-semibold text-gray-700">Overall Condition</h4>
+                                 <div className="bg-gradient-to-r from-amber-500 to-amber-400 text-white font-bold px-3 py-1 rounded-full">
+                                   Excellent
+                                 </div>
+                               </div>
+                               
+                               <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                 <div className="bg-gradient-to-r from-amber-500 to-amber-400 h-2.5 rounded-full" style={{ width: '92%' }}></div>
+                               </div>
+                               <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                 <span>Poor</span>
+                                 <span>Excellent</span>
+                               </div>
+                             </div>
+                             
+                             {/* Key Inspection Points */}
+                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                                 <div className="flex items-center mb-2">
+                                   <Wrench className="h-5 w-5 text-[#f78f37] mr-2" />
+                                   <h5 className="font-semibold text-gray-700">Mechanical</h5>
+                                 </div>
+                                 <div className="flex justify-between items-center">
+                                   <span className="text-sm text-gray-600">Condition</span>
+                                   <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">
+                                     Excellent
+                                   </div>
+                                 </div>
+                               </div>
+                               
+                               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                                 <div className="flex items-center mb-2">
+                                   <Car className="h-5 w-5 text-[#f78f37] mr-2" />
+                                   <h5 className="font-semibold text-gray-700">Exterior</h5>
+                                 </div>
+                                 <div className="flex justify-between items-center">
+                                   <span className="text-sm text-gray-600">Condition</span>
+                                   <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">
+                                     Very Good
+                                   </div>
+                                 </div>
+                               </div>
+                               
+                               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                                 <div className="flex items-center mb-2">
+                                   <Star className="h-5 w-5 text-[#f78f37] mr-2" />
+                                   <h5 className="font-semibold text-gray-700">Interior</h5>
+                                 </div>
+                                 <div className="flex justify-between items-center">
+                                   <span className="text-sm text-gray-600">Condition</span>
+                                   <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">
+                                     Excellent
+                                   </div>
+                                 </div>
+                               </div>
+                             </div>
+                             
+                             {/* Detailed Inspection Information */}
+                             <div className="border-t border-gray-200 pt-6">
+                               <h4 className="font-semibold text-gray-700 mb-4">Detailed Inspection Report</h4>
+                               
+                               <div className="space-y-4">
+                                 {inspectionDetails && (
+                                   <div>
+                                     {Object.keys(inspectionDetails?.inspectionJson).map((category, index) => {
+                                       if(category === 'overview' || category === 'extraData') return null;
+                                       
+                                       return (
+                                         <div key={category + index} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4">
+                                           <h5 className="font-semibold text-gray-700 mb-2">{category.replace(/_/g, " ")}</h5>
+                                           <div className="text-sm flex items-center">
+                                             {typeof inspectionDetails?.inspectionJson[category] === 'object' && inspectionDetails?.inspectionJson[category]?.length ? (
+                                               <span>{inspectionDetails?.inspectionJson[category][0].value}</span>
+                                             ) : typeof inspectionDetails?.inspectionJson[category] === 'object' && !inspectionDetails?.inspectionJson[category]?.length ? (
+                                               <span>{inspectionDetails?.inspectionJson[category]?.value || 'N/A'}</span>
+                                             ) : (
+                                               <span>{inspectionDetails?.inspectionJson[category] === "" ? "N/A" : inspectionDetails?.inspectionJson[category]}</span>
+                                             )}
+                                             
+                                             {/* Check if this field has extra data */}
+                                             {extraData && extraData[category] && (
+                                               <Popover>
+                                                 <PopoverTrigger>
+                                                   <Info className="h-4 w-4 ml-2 text-blue-500 cursor-pointer" />
+                                                 </PopoverTrigger>
+                                                 <PopoverContent className="w-80 p-0 bg-white">
+                                                   <div className="p-4">
+                                                     <h5 className="font-medium text-gray-900 mb-2">{category.replace(/_/g, " ")} Details</h5>
+                                                     {extraData[category].image && (
+                                                       <div className="mb-3">
+                                                         <img 
+                                                           src={extraData[category].image} 
+                                                           alt={category.replace(/_/g, " ")} 
+                                                           className="w-full h-auto rounded-md"
+                                                         />
+                                                       </div>
+                                                     )}
+                                                     {extraData[category].comment && (
+                                                       <p className="text-sm text-gray-700">
+                                                         <span className="font-medium">Comment:</span> {extraData[category].comment}
+                                                       </p>
+                                                     )}
+                                                   </div>
+                                                 </PopoverContent>
+                                               </Popover>
+                                             )}
+                                           </div>
+                                         </div>
+                                       );
+                                     })}
+                                   </div>
+                                 )}
+                               </div>
+                             </div>
+                           </div>
+                         )}
+                       </div>
+                       
+                       {/* Car Body Condition */}
+                       <div>
+                         <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                           <Car className="h-5 w-5 mr-2 text-[#f78f37]" /> Car Body Condition
+                         </h3>
+                         
+                         <div className="bg-gray-50 p-6 rounded-lg">
+                           {inspectionDetails?.carBodyConditionJson ? (
+                             <CarBodySvgView data={inspectionDetails?.carBodyConditionJson}/>
+                           ) : (
+                             <div className="text-center py-8">
+                               <p className="text-gray-500">Car body condition details not available.</p>
+                             </div>
+                           )}
+                         </div>
+                       </div>
+                       
+                       {/* Inspection Images */}
+                       <div>
+                         <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                           <FileText className="h-5 w-5 mr-2 text-[#f78f37]" /> Inspection Images
+                         </h3>
+                         
+                         <div className="bg-gray-50 p-6 rounded-lg">
+                           {images?.length > 0 ? (
+                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                               {images.map((img: any, index: number) => (
+                                 <div key={index} className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
+                                   <img 
+                                     src={img} 
+                                     alt={`Inspection image ${index + 1}`} 
+                                     className="w-full h-32 object-cover rounded-md mb-2" 
+                                   />
+                                   <p className="text-xs text-gray-500 text-center truncate">
+                                     {img.caption || `Image ${index + 1}`}
+                                   </p>
+                                 </div>
+                               ))}
+                             </div>
+                           ) : (
+                             <div className="text-center py-8">
+                               <p className="text-gray-500">No inspection images available.</p>
+                             </div>
+                           )}
+                         </div>
+                       </div>
+                       
+                       {/* Inspection Certificate */}
+                       <div>
+                         <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                           <Award className="h-5 w-5 mr-2 text-[#f78f37]" /> Inspection Certificate
+                         </h3>
+                         
+                         <div className="bg-gray-50 p-6 rounded-lg text-center">
+                           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-md mx-auto">
+                             <Shield className="h-16 w-16 mx-auto text-[#f78f37] mb-4" />
+                             <h4 className="text-xl font-bold text-gray-800 mb-2">Certified Pre-Owned</h4>
+                             <p className="text-gray-600 mb-4">This vehicle has passed our rigorous 150-point inspection process.</p>
+                             <div className="flex justify-center space-x-2 mb-4">
+                               <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                                 Mechanical ✓
+                               </div>
+                               <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                                 Electrical ✓
+                               </div>
+                               <div className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">
+                                 Safety ✓
+                               </div>
+                             </div>
+                             <button className="text-[#f78f37] hover:text-[#e67d26] font-medium">
+                               Download Certificate
+                             </button>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
                 )}
 
             

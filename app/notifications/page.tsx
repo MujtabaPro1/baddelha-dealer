@@ -13,18 +13,78 @@ import axiosInstance from '@/service/api';
 export default function NotificationsPage() {
   const { markAllAsRead, clearAllNotifications } = useNotification();
   const [activeTab, setActiveTab] = useState<NotificationType | 'all'>('all');
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   useEffect(() => {
     getNotifications();
   }, []);
+
+  // Helper function to parse JSON message data
+  const parseMessageData = (message: string) => {
+    try {
+      const parsed = JSON.parse(message);
+      if (parsed.carId || parsed.auctionId || parsed.winningAmount) {
+        return {
+          carId: parsed.carId,
+          auctionId: parsed.auctionId,
+          winningAmount: parsed.winningAmount,
+        };
+      }
+    } catch (error) {
+      // Not JSON or invalid JSON, return null
+    }
+    return null;
+  };
+
+  // Helper function to format auction message
+  const formatAuctionMessage = (parsedData: any) => {
+    if (parsedData?.winningAmount && parsedData?.carId) {
+      return `Congratulations! You won the auction with a bid of $${parsedData.winningAmount.toLocaleString()}`;
+    }
+    return null;
+  };
+
+  // Helper function to map API notification types to our types
+  const mapNotificationType = (type: string): NotificationType => {
+    switch (type?.toLowerCase()) {
+      case 'success':
+        return 'success';
+      case 'warning':
+        return 'warning';
+      case 'error':
+      case 'danger':
+        return 'error';
+      case 'info':
+      default:
+        return 'info';
+    }
+  };
 
   const getNotifications = async () => {
     try {
       const response = await axiosInstance.get('1.0/notification/find-all');
       console.log(response?.data);
       if (response?.data) {
-        setNotifications(response?.data?.data);
+        // Transform API response to match our enhanced notification format
+        const apiNotifications = response?.data?.data || [];
+        const transformedNotifications = Array.isArray(apiNotifications) 
+          ? apiNotifications.map((item: any) => {
+              const originalMessage = item.message || item.content || '';
+              const parsedData = parseMessageData(originalMessage);
+              const formattedMessage = parsedData ? formatAuctionMessage(parsedData) : null;
+              
+              return {
+                ...item,
+                type: mapNotificationType(item.type || item.notificationType || (parsedData ? 'success' : 'info')),
+                message: formattedMessage || originalMessage,
+                title: item.title || item.subject || (parsedData ? 'Auction Won!' : 'Notification'),
+                createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
+                parsedData: parsedData || undefined,
+              };
+            })
+          : [];
+        
+        setNotifications(transformedNotifications);
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -99,21 +159,56 @@ export default function NotificationsPage() {
               <div className="space-y-4">
                 {filteredNotifications.map((notification:any) => (
                   <Card key={notification.id} className={`overflow-hidden transition-all duration-300 ${!notification.isRead ? 'border-l-4 border-l-[#3498db]' : ''}`}>
-                    <CardContent className="p-4">
+                    <CardContent className="p-6">
                       <div className="flex items-start gap-4">
                         <div className="mt-1">
                           {getNotificationIcon(notification.type)}
                         </div>
                         <div className="flex-1">
-                          <div className="flex justify-between items-start">
-                            <h3 className="font-medium text-[#2c3e50]">
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 className="font-semibold text-lg text-[#2c3e50]">
                               {notification.title || 'Notification'}
                             </h3>
-                            <span className="text-xs text-[#7f8c8d]">
-                              {format(notification.createdAt, 'MMM dd, yyyy HH:mm')}
+                            <span className="text-sm text-[#7f8c8d] bg-[#f8f9fa] px-2 py-1 rounded">
+                              {format(new Date(notification.createdAt), 'MMM dd, yyyy HH:mm')}
                             </span>
                           </div>
-                          <p className="text-[#7f8c8d] mt-1">{notification.message}</p>
+                          <p className="text-[#7f8c8d] mb-3 leading-relaxed">{notification.message}</p>
+                          
+                          {notification.parsedData && (
+                            <div className="mt-4 p-4 bg-gradient-to-r from-[#f8f9fa] to-[#ffffff] rounded-lg border border-[#e9ecef] shadow-sm">
+                              <h4 className="text-sm font-semibold text-[#2c3e50] mb-3 flex items-center">
+                                <CheckCircle className="w-4 h-4 text-[#2ecc71] mr-2" />
+                                Auction Details
+                              </h4>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {notification.parsedData.winningAmount && (
+                                  <div className="bg-white p-3 rounded-md border border-[#e9ecef]">
+                                    <div className="text-xs font-medium text-[#7f8c8d] mb-1">Winning Amount</div>
+                                    <div className="text-xl font-bold text-[#2ecc71]">
+                                      ${notification.parsedData.winningAmount.toLocaleString()}
+                                    </div>
+                                  </div>
+                                )}
+                                {notification.parsedData.carId && (
+                                  <div className="bg-white p-3 rounded-md border border-[#e9ecef]">
+                                    <div className="text-xs font-medium text-[#7f8c8d] mb-1">Car ID</div>
+                                    <div className="text-sm font-mono text-[#2c3e50] break-all">
+                                      {notification.parsedData.carId}
+                                    </div>
+                                  </div>
+                                )}
+                                {notification.parsedData.auctionId && (
+                                  <div className="bg-white p-3 rounded-md border border-[#e9ecef]">
+                                    <div className="text-xs font-medium text-[#7f8c8d] mb-1">Auction ID</div>
+                                    <div className="text-sm font-mono text-[#2c3e50] break-all">
+                                      {notification.parsedData.auctionId}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </CardContent>
