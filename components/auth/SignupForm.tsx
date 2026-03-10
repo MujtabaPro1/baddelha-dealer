@@ -52,8 +52,8 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
     
     if (!formData.phone.trim()) {
       errors.phone = 'Phone number is required';
-    } else if (!/^[+]?[0-9]{10,15}$/.test(formData.phone.replace(/\s+/g, ''))) {
-      errors.phone = 'Please enter a valid phone number';
+    } else if (!/^[0-9]{9}$/.test(formData.phone.replace(/\s+/g, ''))) {
+      errors.phone = 'Please enter a valid 9-digit Saudi phone number';
     }
     
     if (!formData.dealershipName.trim()) errors.dealershipName = 'Dealership name is required';
@@ -133,7 +133,7 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
             </Alert>
           )}
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1  gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
               <div className="relative">
@@ -172,20 +172,23 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
             
             <div className="space-y-2">
               <Label htmlFor="phone">Phone</Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <div className="flex">
+                <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
+                  +966
+                </span>
                 <Input
                   id="phone"
-                  placeholder="+1 (555) 123-4567"
+                  type="tel"
+                  placeholder="501234567"
                   value={formData.phone}
                   onChange={(e) => handleChange('phone', e.target.value)}
-                  className={`pl-10 ${validationErrors.phone ? 'border-red-500' : ''}`}
+                  className={`rounded-l-none ${validationErrors.phone ? 'border-red-500' : ''}`}
                   required
                 />
-                {validationErrors.phone && (
-                  <p className="text-xs text-red-500 mt-1">{validationErrors.phone}</p>
-                )}
               </div>
+              {validationErrors.phone && (
+                <p className="text-xs text-red-500 mt-1">{validationErrors.phone}</p>
+              )}
             </div>
           </div>
           
@@ -232,7 +235,7 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
               <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
                 id="license"
-                placeholder="DL-2024-001"
+                placeholder="CR 1234567890"
                 value={formData.licenseNumber}
                 onChange={(e) => handleChange('licenseNumber', e.target.value)}
                 className={`pl-10 ${validationErrors.licenseNumber ? 'border-red-500' : ''}`}
