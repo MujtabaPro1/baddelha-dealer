@@ -85,9 +85,25 @@ export default function CarAuctionPlatform() {
   
   // Check authentication and redirect if not authenticated
   useEffect(() => {
+
+    let _isPending = false;
+    if(localStorage.getItem('baddelha_user')){
+      const user = JSON.parse(localStorage.getItem('baddelha_user') || '{}');
+      if(user?.status == 'Pending' || user?.status == 'Pending_Approval'){
+        _isPending = true;
+      }
+    }
+
+ 
     if (!authLoading && !isAuthenticated) {
       router.push('/auth');
     }
+
+    else if(_isPending){
+      router.push('/dealer/verification');
+      return;
+    }
+
   }, [isAuthenticated, authLoading, router]);
 
   useEffect(() => {

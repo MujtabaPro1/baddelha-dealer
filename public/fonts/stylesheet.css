@@ -1,0 +1,104 @@
+@font-face {
+    font-family: 'Shubbak';
+    src: url('Shubbak-Light.eot');
+    src: local('Shubbak Light'), local('Shubbak-Light'),
+        url('Shubbak-Light.eot?#iefix') format('embedded-opentype'),
+        url('Shubbak-Light.woff2') format('woff2'),
+        url('Shubbak-Light.woff') format('woff'),
+        url('Shubbak-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Shubbak';
+    src: url('Shubbak-SemiBold.eot');
+    src: local('Shubbak SemiBold'), local('Shubbak-SemiBold'),
+        url('Shubbak-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('Shubbak-SemiBold.woff2') format('woff2'),
+        url('Shubbak-SemiBold.woff') format('woff'),
+        url('Shubbak-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Shubbak';
+    src: url('Shubbak-Medium.eot');
+    src: local('Shubbak Medium'), local('Shubbak-Medium'),
+        url('Shubbak-Medium.eot?#iefix') format('embedded-opentype'),
+        url('Shubbak-Medium.woff2') format('woff2'),
+        url('Shubbak-Medium.woff') format('woff'),
+        url('Shubbak-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Shubbak';
+    src: url('Shubbak-Black.eot');
+    src: local('Shubbak Black'), local('Shubbak-Black'),
+        url('Shubbak-Black.eot?#iefix') format('embedded-opentype'),
+        url('Shubbak-Black.woff2') format('woff2'),
+        url('Shubbak-Black.woff') format('woff'),
+        url('Shubbak-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Shubbak';
+    src: url('Shubbak-ExtraLight.eot');
+    src: local('Shubbak ExtraLight'), local('Shubbak-ExtraLight'),
+        url('Shubbak-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('Shubbak-ExtraLight.woff2') format('woff2'),
+        url('Shubbak-ExtraLight.woff') format('woff'),
+        url('Shubbak-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Shubbak';
+    src: url('Shubbak-Regular.eot');
+    src: local('Shubbak Regular'), local('Shubbak-Regular'),
+        url('Shubbak-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Shubbak-Regular.woff2') format('woff2'),
+        url('Shubbak-Regular.woff') format('woff'),
+        url('Shubbak-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Shubbak';
+    src: url('Shubbak-Bold.eot');
+    src: local('Shubbak Bold'), local('Shubbak-Bold'),
+        url('Shubbak-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Shubbak-Bold.woff2') format('woff2'),
+        url('Shubbak-Bold.woff') format('woff'),
+        url('Shubbak-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Shubbak';
+    src: url('Shubbak-ExtraBold.eot');
+    src: local('Shubbak ExtraBold'), local('Shubbak-ExtraBold'),
+        url('Shubbak-ExtraBold.eot?#iefix') format('embedded-opentype'),
+        url('Shubbak-ExtraBold.woff2') format('woff2'),
+        url('Shubbak-ExtraBold.woff') format('woff'),
+        url('Shubbak-ExtraBold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+

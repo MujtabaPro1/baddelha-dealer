@@ -1,0 +1,10 @@
+# Badelha Dealer - Robots.txt
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /api/
+Disallow: /dealer/verification
+
+# Sitemap location
+Sitemap: https://dealer.baddelha.com/sitemap.xml

@@ -8,7 +8,8 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  isPending: boolean;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; isPending?: boolean }>;
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<User>) => Promise<{ success: boolean; error?: string }>;
 }
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -40,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     
     try {
-      const response: any = await axiosInstance.post<any>('auth/sign-in', {
+      const response: any = await axiosInstance.post<any>('1.0/dealer/sign-in', {
         email,
         password
       });
@@ -53,20 +55,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('token', data.access_token);
         localStorage.setItem('refresh_token', data.refresh_token);
         
+        // Map dealer status to normalized format
+        let normalizedStatus = 'Active';
+        if(data?.dealer?.status === 'active') {
+          normalizedStatus = 'Active';
+        }
+        else if(data?.dealer?.status === 'pending') {
+          normalizedStatus = 'Pending';
+        }
+        else if(data?.dealer?.status === 'pending_approval') {
+          normalizedStatus = 'Pending_Approval';
+        }
+
         // Map API response to AuthUser format
         let userData: any = {
-          id: data.id.toString(),
+          id: data.id?.toString() || '',
           name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
-          email: data.email,
-          role: data.role.name
+          email: data.email || '',
+          phone: data.phone || '',
+          avatar: data.avatar || null,
+          role: data.role?.name || 'Dealer',
+          permissions: data.role?.Permission || [],
+          dealer: {
+            company: data.dealer?.company || '',
+            licenseNumber: data.dealer?.licenseNumber || '',
+            dealerType: data.dealer?.dealerType || null,
+            status: data.dealer?.status || 'pending'
+          },
+          status: normalizedStatus
         };
         
+        // Check if dealer account is pending (either not verified or awaiting approval)
+        const isPendingStatus = normalizedStatus === 'Pending' || normalizedStatus === 'Pending_Approval';
+        setIsPending(isPendingStatus);
       
         localStorage.setItem('baddelha_user', JSON.stringify(userData));
         setUser(userData);
       
-        // Return the role for redirection in the Login component
-        return { success: true, role: userData.role };
+        // Return the role and pending status for redirection in the Login component
+        return { success: true, role: userData.role, isPending: isPendingStatus };
       } else {
         // Extract error message from response
         const errorMessage = typeof response.data.message === 'string' 
@@ -131,6 +158,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         isAuthenticated: !!user,
         isLoading,
+        isPending,
         login,
         logout,
         updateProfile,

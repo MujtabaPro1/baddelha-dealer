@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Mail, Lock, User, Building, Phone, FileText } from 'lucide-react';
+import { Loader2, Mail, Lock, User, Building, Phone, FileText, MapPin, Globe } from 'lucide-react';
 
 interface SignupFormProps {
   onSwitchToLogin: () => void;
@@ -27,9 +27,12 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
     confirmPassword: '',
     firstName: '',
     lastName: '',
-    dealershipName: '',
+    company: '',
     phone: '',
-    licenseNumber: ''
+    companyPhone: '',
+    location: '',
+    licenseNumber: '',
+    website: ''
   });
   
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -55,9 +58,17 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
     } else if (!/^[0-9]{9}$/.test(formData.phone.replace(/\s+/g, ''))) {
       errors.phone = 'Please enter a valid 9-digit Saudi phone number';
     }
+
+    if (formData.companyPhone && !/^[0-9]{9}$/.test(formData.companyPhone.replace(/\s+/g, ''))) {
+      errors.companyPhone = 'Please enter a valid 9-digit Saudi phone number';
+    }
     
-    if (!formData.dealershipName.trim()) errors.dealershipName = 'Dealership name is required';
-    if (!formData.licenseNumber.trim()) errors.licenseNumber = 'License number is required';
+    if (!formData.location.trim()) errors.location = 'Location is required';
+
+    
+    if (formData.website && !/^https?:\/\/.+/.test(formData.website)) {
+      errors.website = 'Please enter a valid URL (starting with http:// or https://)';
+    }
     
     if (!formData.password) {
       errors.password = 'Password is required';
@@ -89,13 +100,16 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
+        phone: `+966${formData.phone}`,
         password: formData.password,
-        phone: formData.phone,
-        // Additional metadata could be stored in a separate dealer profile
-        // For now, we'll just use the API as specified
+        company: formData.company,
+        companyPhone: formData.companyPhone ?  `+966${formData.companyPhone}`: '',
+        location: formData.location,
+        licenseNumber: formData.licenseNumber,
+        website: formData.website || undefined,
       });
       
-      setSuccessMessage('Account created successfully! Redirecting to login...');
+      setSuccessMessage('Account created successfully! Your account is pending verification. Please login to complete your profile.');
       
       // Redirect to login after a short delay
       setTimeout(() => {
@@ -135,12 +149,14 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
           
           <div className="grid grid-cols-1  gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="firstName">First Name
+                <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
+              </Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   id="firstName"
-                  placeholder="John"
+                  placeholder="Please enter first name"
                   value={formData.firstName}
                   onChange={(e) => handleChange('firstName', e.target.value)}
                   className={`pl-10 ${validationErrors.firstName ? 'border-red-500' : ''}`}
@@ -153,12 +169,14 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="lastName">Last Name
+                            <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
+              </Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   id="lastName"
-                  placeholder="Smith"
+                  placeholder="Please enter last name"
                   value={formData.lastName}
                   onChange={(e) => handleChange('lastName', e.target.value)}
                   className={`pl-10 ${validationErrors.lastName ? 'border-red-500' : ''}`}
@@ -171,7 +189,9 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">Phone
+                            <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
+              </Label>
               <div className="flex">
                 <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
                   +966
@@ -179,7 +199,7 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="501234567"
+                  placeholder="501 XXX XXX"
                   value={formData.phone}
                   onChange={(e) => handleChange('phone', e.target.value)}
                   className={`rounded-l-none ${validationErrors.phone ? 'border-red-500' : ''}`}
@@ -193,13 +213,15 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email
+              <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
+            </Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
                 id="email"
                 type="email"
-                placeholder="john@premiumautos.com"
+                placeholder="Enter your email"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
                 className={`pl-10 ${validationErrors.email ? 'border-red-500' : ''}`}
@@ -212,34 +234,72 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="dealership">Dealership Name</Label>
+            <Label htmlFor="company">Company Name</Label>
             <div className="relative">
               <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
-                id="dealership"
-                placeholder="Premium Auto Group"
-                value={formData.dealershipName}
-                onChange={(e) => handleChange('dealershipName', e.target.value)}
-                className={`pl-10 ${validationErrors.dealershipName ? 'border-red-500' : ''}`}
-                required
+                id="company"
+                placeholder="Dealer Company LLC"
+                value={formData.company}
+                onChange={(e) => handleChange('company', e.target.value)}
+                className={`pl-10 ${validationErrors.company ? 'border-red-500' : ''}`}
               />
-              {validationErrors.dealershipName && (
-                <p className="text-xs text-red-500 mt-1">{validationErrors.dealershipName}</p>
+              {validationErrors.company && (
+                <p className="text-xs text-red-500 mt-1">{validationErrors.company}</p>
               )}
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="license">Dealer License Number</Label>
+            <Label htmlFor="companyPhone">Company Phone</Label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
+                +966
+              </span>
+              <Input
+                id="companyPhone"
+                type="tel"
+                placeholder="511111111"
+                value={formData.companyPhone}
+                onChange={(e) => handleChange('companyPhone', e.target.value)}
+                className={`rounded-l-none ${validationErrors.companyPhone ? 'border-red-500' : ''}`}
+              />
+            </div>
+            {validationErrors.companyPhone && (
+              <p className="text-xs text-red-500 mt-1">{validationErrors.companyPhone}</p>
+            )}
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="location">Location
+                          <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
+            </Label>
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                id="location"
+                placeholder="Riyadh, Saudi Arabia"
+                value={formData.location}
+                onChange={(e) => handleChange('location', e.target.value)}
+                className={`pl-10 ${validationErrors.location ? 'border-red-500' : ''}`}
+                required
+              />
+              {validationErrors.location && (
+                <p className="text-xs text-red-500 mt-1">{validationErrors.location}</p>
+              )}
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="license">License Number</Label>
             <div className="relative">
               <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
                 id="license"
-                placeholder="CR 1234567890"
+                placeholder="a234234"
                 value={formData.licenseNumber}
                 onChange={(e) => handleChange('licenseNumber', e.target.value)}
                 className={`pl-10 ${validationErrors.licenseNumber ? 'border-red-500' : ''}`}
-                required
               />
               {validationErrors.licenseNumber && (
                 <p className="text-xs text-red-500 mt-1">{validationErrors.licenseNumber}</p>
@@ -247,9 +307,29 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
             </div>
           </div>
           
+          <div className="space-y-2">
+            <Label htmlFor="website">Website (Optional)</Label>
+            <div className="relative">
+              <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                id="website"
+                type="url"
+                placeholder="https://dealer-company.example"
+                value={formData.website}
+                onChange={(e) => handleChange('website', e.target.value)}
+                className={`pl-10 ${validationErrors.website ? 'border-red-500' : ''}`}
+              />
+              {validationErrors.website && (
+                <p className="text-xs text-red-500 mt-1">{validationErrors.website}</p>
+              )}
+            </div>
+          </div>
+          
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Password
+                            <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
+              </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
@@ -268,7 +348,9 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm</Label>
+              <Label htmlFor="confirmPassword">Confirm
+                            <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
+              </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input

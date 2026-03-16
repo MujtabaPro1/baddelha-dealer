@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Car } from 'lucide-react';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
+
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,6 +18,7 @@ export default function AuthPage() {
 
   // If already authenticated, redirect to main page
   React.useEffect(() => {
+
     if (isAuthenticated) {
       router.push('/');
     }
@@ -27,10 +29,17 @@ export default function AuthPage() {
     setLoading(true);
     try {
       const result = await login(email, password);
+      console.log('Login result:', result);
       if (!result.success) {
         setError(result.error || 'Login failed');
       } else {
-        router.push('/');
+        // Check if dealer account is pending verification
+        console.log('result',result.isPending)
+        if (result.isPending) {
+          router.push('/dealer/verification');
+        } else {
+          router.push('/');
+        }
       }
     } catch (err) {
       setError('An unexpected error occurred');
