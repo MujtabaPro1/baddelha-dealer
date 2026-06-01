@@ -21,7 +21,7 @@ import {
   Wrench,
   Info
 } from 'lucide-react';
-import { Header } from '@/components/ui/Header';
+
 import axiosInstance from '@/service/api';
 import { inspectionData, numberWithCommas } from '@/lib/utils';
 import CarBodySvgView from '@/components/ui/CarBodyView';
@@ -236,7 +236,6 @@ const CarDetail: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f8f9fa]">
 
-      <Header />
       
 
       <div className="max-w-7xl mx-auto px-6 py-6">
