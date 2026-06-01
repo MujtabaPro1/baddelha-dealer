@@ -372,7 +372,7 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
           
           <Button 
             type="submit" 
-            className="w-full bg-[#4b535b] hover:bg-[#4b535b] text-white" 
+            className="w-full bg-[#ee3c48] hover:bg-[#ee3c48] text-white" 
             disabled={loading}>
             {loading ? (
               <>
@@ -390,7 +390,7 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
               <button
                 type="button"
                 onClick={onSwitchToLogin}
-                className="text-primary hover:underline font-medium"
+                className="text-[#ee3c48] hover:underline font-medium"
               >
                 Sign in
               </button>

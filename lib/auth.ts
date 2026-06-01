@@ -9,6 +9,7 @@ export interface User {
     joinedDate: string;
     totalBids: number;
     wonAuctions: number;
+    status?: string;
   }
   
   export interface AuthState {

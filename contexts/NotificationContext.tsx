@@ -46,6 +46,15 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   // Fetch notifications from API
   const refreshNotifications = async () => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('baddelha_user');
+    
+    if (!token || !user) {
+      // User not logged in, skip fetching notifications
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetchNotifications();
@@ -79,9 +88,14 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Load notifications on mount
+  // Load notifications on mount only if user is logged in
   useEffect(() => {
-    refreshNotifications();
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('baddelha_user');
+    
+    if (token && user) {
+      refreshNotifications();
+    }
   }, []);
 
   // Helper function to parse JSON message data

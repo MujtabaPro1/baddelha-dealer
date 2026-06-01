@@ -145,7 +145,6 @@ export default function DealerSettingsPage() {
 
   return (
     <>
-      <Header title="Settings" />
       <div className="p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>

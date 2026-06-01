@@ -54,7 +54,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Store tokens
         localStorage.setItem('token', data.access_token);
         localStorage.setItem('refresh_token', data.refresh_token);
+
+
         
+       
         // Map dealer status to normalized format
         let normalizedStatus = 'Active';
         if(data?.dealer?.status === 'active') {
@@ -65,6 +68,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         else if(data?.dealer?.status === 'pending_approval') {
           normalizedStatus = 'Pending_Approval';
+        }
+        else {
+          normalizedStatus = 'Rejected';
+          return { success: true, role: null, isPending: false, status: normalizedStatus };
         }
 
         // Map API response to AuthUser format
@@ -93,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(userData);
       
         // Return the role and pending status for redirection in the Login component
-        return { success: true, role: userData.role, isPending: isPendingStatus };
+        return { success: true, role: userData.role, isPending: isPendingStatus , status: normalizedStatus };
       } else {
         // Extract error message from response
         const errorMessage = typeof response.data.message === 'string' 

@@ -47,8 +47,8 @@ export function NotificationMenu() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative p-2 rounded-full hover:bg-[#34495e] transition-colors">
-          <Bell className="w-5 h-5 text-white" />
+        <Button variant="ghost" className="relative p-2 rounded-full hover:bg-[#ee3c48] hover:text-white transition-colors">
+          <Bell className="w-5 h-5 text-dark hover:text-white" />
           {unreadCount > 0 && (
             <span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-[#e74c3c] rounded-full">
               {unreadCount > 9 ? '9+' : unreadCount}

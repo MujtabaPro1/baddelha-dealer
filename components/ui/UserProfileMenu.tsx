@@ -28,6 +28,9 @@ export function UserProfileMenu() {
 
   if (!user) return null;
 
+  // Check if user is an active dealer
+  const isActiveDealer = user?.status === 'Active';
+
   // Get initials for avatar fallback
   const getInitials = (name: string) => {
     return name
@@ -41,14 +44,14 @@ export function UserProfileMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center space-x-2 rounded-full p-1 hover:bg-[#34495e]/30 transition-colors duration-200">
+        <button className="flex items-center space-x-2 rounded-full p-1 hover:bg-gray-100 transition-colors duration-200">
           <Avatar className="h-8 w-8 border-2 border-[#f39c12] shadow-sm">
-            <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback className="bg-[#f39c12]/20 text-[#f39c12] font-medium">
-              {getInitials(user.name)}
+            <AvatarImage src={user?.avatar || ''} alt={user?.name || 'User'} />
+            <AvatarFallback className="bg-[#f39c12] text-white font-medium text-sm">
+              {user?.name ? getInitials(user.name) : 'U'}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium hidden md:inline text-white">{user.name}</span>
+          <span className="text-sm font-medium hidden md:inline text-gray-800 ">&nbsp;{user?.name || 'User'}&nbsp;</span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 border-[#e9ecef] bg-white shadow-lg rounded-md overflow-hidden">
@@ -58,21 +61,34 @@ export function UserProfileMenu() {
             <p className="text-xs text-[#7f8c8d]">{user.email}</p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-[#e9ecef]" />
-        <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
-          <User className="mr-2 h-4 w-4 text-[#34495e]" />
-          <span onClick={() => router.push('/dealer/profile')} >Profile</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
-          <Table className="mr-2 h-4 w-4 text-[#34495e]" />
-          <span onClick={() => router.push('/dealer/bids')} >Bids</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200">
-          <Receipt className="mr-2 h-4 w-4 text-[#34495e]" />
-          <span onClick={() => router.push('/dealer/invoices')} >Invoices</span>
-        </DropdownMenuItem>
+        
+        {isActiveDealer && (
+          <>
+            <DropdownMenuSeparator className="bg-[#e9ecef]" />
+            <DropdownMenuItem 
+              className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200"
+              onClick={() => router.push('/dealer/profile')}
+            >
+              <User className="mr-2 h-4 w-4 text-[#34495e]" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200"
+              onClick={() => router.push('/dealer/bids')}
+            >
+              <Table className="mr-2 h-4 w-4 text-[#34495e]" />
+              <span>Bids</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="cursor-pointer hover:bg-[#f8f9fa] hover:text-[#3498db] text-[#2c3e50] transition-colors duration-200"
+              onClick={() => router.push('/dealer/invoices')}
+            >
+              <Receipt className="mr-2 h-4 w-4 text-[#34495e]" />
+              <span>Invoices</span>
+            </DropdownMenuItem>
+          </>
+        )}
 
-    
         <DropdownMenuSeparator className="bg-[#e9ecef]" />
         <DropdownMenuItem className="cursor-pointer text-[#e74c3c] hover:bg-[#f8f9fa] hover:text-[#c0392b] transition-colors duration-200" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />

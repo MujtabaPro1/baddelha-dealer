@@ -5,8 +5,11 @@ import { useRouter } from 'next/navigation';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { SignupForm } from '@/components/auth/SignupForm';
 import { useAuth } from '@/contexts/AuthContext';
-import { Car } from 'lucide-react';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { useLanguage } from '@/contexts/LanguageContext';
+import lang from '@/locale';
+import { toast } from 'sonner';
+import Image from 'next/image';
 
 
 export default function AuthPage() {
@@ -15,6 +18,8 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = lang[language];
 
   // If already authenticated, redirect to main page
   React.useEffect(() => {
@@ -28,16 +33,24 @@ export default function AuthPage() {
     setError(null);
     setLoading(true);
     try {
-      const result = await login(email, password);
+      const result: any = await login(email, password);
       console.log('Login result:', result);
+
       if (!result.success) {
         setError(result.error || 'Login failed');
       } else {
         // Check if dealer account is pending verification
-        console.log('result',result.isPending)
+        console.log('Result:', result);
         if (result.isPending) {
+          console.log('Account pending verification');
           router.push('/dealer/verification');
-        } else {
+        } 
+        else if(result.status == 'Rejected') {
+          console.log('Account rejected');
+          toast.error('Unfortunately, your account has been rejected. Please Contact Support for more information', { duration: 5000 });
+        }
+        else if(result.status != 'Rejected') {
+          console.log('Redirecting to home');
           router.push('/');
         }
       }
@@ -56,37 +69,32 @@ export default function AuthPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="text-center">
           <LoadingSpinner size="large" />
-          <p className="mt-4 text-slate-600">Loading...</p>
+          <p className="mt-4 text-slate-600">{t.loading}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="flex items-center justify-center mb-8">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#41575F] to-[#41575F] rounded-lg flex items-center justify-center">
-            <Car className="w-7 h-7 text-white" />
-          </div>
-          <div className="ml-3">
-            <h1 className="text-2xl font-bold text-slate-900">Badelha Dealer</h1>
-            <p className="text-sm text-slate-600">Professional Vehicle Auction Platform</p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col">
+      <div className="flex flex-1 items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          {isLogin ? (
+            <>
+                      <LoginForm
+              onLogin={handleLogin}
+              onSwitchToSignup={() => setIsLogin(false)}
+              loading={loading}
+              error={error}
+            />
+            </>
 
-        {isLogin ? (
-          <LoginForm
-            onLogin={handleLogin}
-            onSwitchToSignup={() => setIsLogin(false)}
-            loading={loading}
-            error={error}
-          />
-        ) : (
-          <SignupForm
-            onSwitchToLogin={() => setIsLogin(true)}
-          />
-        )}
+          ) : (
+            <SignupForm
+              onSwitchToLogin={() => setIsLogin(true)}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

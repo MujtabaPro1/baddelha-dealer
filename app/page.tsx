@@ -13,6 +13,8 @@ import axiosInstance from '@/service/api';
 import { UserProfileMenu } from '@/components/ui/UserProfileMenu';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Header } from '@/components/ui/Header';
+import { useLanguage } from '@/contexts/LanguageContext';
+import lang from '@/locale';
 
 interface Car {
   id: string;
@@ -82,6 +84,8 @@ export default function CarAuctionPlatform() {
   const [limit] = useState(10);
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = lang[language];
   
   // Check authentication and redirect if not authenticated
   useEffect(() => {
@@ -213,7 +217,7 @@ export default function CarAuctionPlatform() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="text-center">
           <LoadingSpinner size="large" />
-          <p className="mt-4 text-slate-600">Loading...</p>
+          <p className="mt-4 text-slate-600">{t.loading}</p>
         </div>
       </div>
     );
@@ -252,19 +256,15 @@ export default function CarAuctionPlatform() {
 
   return (
     <div className="min-h-screen bg-[#f8f9fa]">
-      {/* Header */}
-      <Header title="Live Auction" rightContent={<UserProfileMenu />} />
-
-
       {/* Search and Filters */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Summary Stats */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
+          <Card className="bg-[#ee3c48] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[#f8f9fa] text-sm">Total Vehicles</p>
+                  <p className="text-[#f8f9fa] text-sm">{t.totalVehicles}</p>
                   <p className="text-3xl font-bold">{cars.length}</p>
                 </div>
                 <Car className="w-8 h-8 text-[#f8f9fa]" />
@@ -272,11 +272,11 @@ export default function CarAuctionPlatform() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
+          <Card className="bg-[#ee3c48] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[#f8f9fa] text-sm">Active Auctions</p>
+                  <p className="text-[#f8f9fa] text-sm">{t.activeAuctions}</p>
                   <p className="text-3xl font-bold">{cars.filter(car => car.timeRemaining > 0).length}</p>
                 </div>
                 <Timer className="w-8 h-8 text-[#f8f9fa]" />
@@ -284,11 +284,11 @@ export default function CarAuctionPlatform() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
+          <Card className="bg-[#ee3c48] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[#f8f9fa] text-sm">Total Bids</p>
+                  <p className="text-[#f8f9fa] text-sm">{t.totalBids}</p>
                   <p className="text-3xl font-bold">{cars.reduce((sum, car) => sum + car.bidCount, 0)}</p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-[#f8f9fa]" />
@@ -296,11 +296,11 @@ export default function CarAuctionPlatform() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-[#4b535b] to-[#34495e] text-white border-0 shadow-md">
+          <Card className="bg-[#ee3c48] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[#f8f9fa] text-sm">Avg. Bid Value</p>
+                  <p className="text-[#f8f9fa] text-sm">{t.avgBidValue}</p>
                   <p className="text-3xl font-bold">
                     {cars?.length ? formatCurrency(cars.reduce((sum, car) => sum + car.currentBid, 0) / cars.length) : '0'}
                   </p>
@@ -314,7 +314,7 @@ export default function CarAuctionPlatform() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7f8c8d] w-5 h-5" />
             <Input
-              placeholder="Search by make, model, or year..."
+              placeholder={t.searchByMakeModelYear}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 h-12 border-[#e9ecef] focus:border-[#3498db] focus:ring-[#3498db]"
@@ -334,8 +334,8 @@ export default function CarAuctionPlatform() {
         ) : cars.length === 0 ? (
           <div className="flex justify-center items-center h-64 w-full">
             <div className="text-center">
-              <h3 className="text-xl font-semibold text-[#2c3e50]">No auctions available</h3>
-              <p className="text-[#7f8c8d] mt-2">There are currently no live auctions.</p>
+              <h3 className="text-xl font-semibold text-[#2c3e50]">{t.noAuctionsAvailable}</h3>
+              <p className="text-[#7f8c8d] mt-2">{t.noLiveAuctions}</p>
             </div>
           </div>
         ) : (
@@ -359,7 +359,7 @@ export default function CarAuctionPlatform() {
             {/* Pagination Controls */}
             <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
               <div className="text-sm text-[#7f8c8d]">
-                Showing page {currentPage} of {totalPages} ({totalItems} vehicles)
+                {t.showingPage} {currentPage} {t.ofPage} {totalPages} ({totalItems} {t.vehiclesCount})
               </div>
               <div className="flex items-center gap-3">
                 <Button
@@ -373,7 +373,7 @@ export default function CarAuctionPlatform() {
                   }}
                   className="border-[#e9ecef] bg-white hover:bg-[#f8f9fa] text-[#2c3e50]"
                 >
-                  Previous
+                  {t.previous}
                 </Button>
                 <Button
                   variant="outline"
@@ -386,7 +386,7 @@ export default function CarAuctionPlatform() {
                   }}
                   className="border-[#e9ecef] bg-white hover:bg-[#f8f9fa] text-[#2c3e50]"
                 >
-                  Next
+                  {t.next}
                 </Button>
               </div>
             </div>
@@ -701,6 +701,8 @@ export default function CarAuctionPlatform() {
 
 
 const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selectedCar, setSelectedCar }: { car: any, openCarDetails: (car: Car) => void, placeBid: (carId: string, amount: number) => void, bidAmount: string, setBidAmount: (amount: string) => void, selectedCar: Car | null, setSelectedCar: (car: Car | null) => void }) => {
+  const { language } = useLanguage();
+  const t = lang[language];
 
   const [timeRemainingText, setTimeRemainingText] = useState('00:00:00');
   const [timeRemainingSeconds, setTimeRemainingSeconds] = useState(0);
@@ -781,7 +783,7 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
         {car.year} {car.make} {car.model}
       </CardTitle>
       <div className="flex items-center justify-between text-sm text-[#7f8c8d] mt-1">
-        <span>{car.mileage.toLocaleString()} miles</span>
+        <span>{car.mileage.toLocaleString()} {t.miles}</span>
         <span>{car.location}</span>
       </div>
     </CardHeader>
@@ -790,11 +792,11 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
       {/* Vehicle Details */}
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div>
-          <p className="text-[#7f8c8d]">Engine</p>
+          <p className="text-[#7f8c8d]">{t.engine}</p>
           <p className="font-semibold text-[#2c3e50]">{car.engine}</p>
         </div>
         <div>
-          <p className="text-[#7f8c8d]">Transmission</p>
+          <p className="text-[#7f8c8d]">{t.transmission}</p>
           <p className="font-semibold text-[#2c3e50]">{car.transmission}</p>
         </div>
       </div>
@@ -803,11 +805,11 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-[#7f8c8d]">Current Bid</p>
+            <p className="text-sm text-[#7f8c8d]">{t.currentBid}</p>
             <p className="text-2xl font-bold text-[#2c3e50]">{formatCurrency(car.currentBid)}</p>
           </div>
-          <div className="text-right">
-            <p className="text-sm text-[#7f8c8d]">Bids</p>
+          <div className="text-end">
+            <p className="text-sm text-[#7f8c8d]">{t.bids}</p>
             <p className="text-lg font-semibold text-[#34495e]">{car.bidCount}</p>
           </div>
         </div>
@@ -816,28 +818,25 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
           <div className="bg-[#f8f9fa] rounded-lg p-3 border border-[#e9ecef]">
             <div className="flex items-center space-x-2">
               <TrendingUp className="w-4 h-4 text-[#3498db]" />
-              <span className="text-sm text-[#34495e]">Highest</span>
+              <span className="text-sm text-[#34495e]">{t.highest}</span>
             </div>
             <p className="font-bold text-[#2c3e50]">{formatCurrency(car.highestBid)}</p>
           </div>
           <div className="bg-[#f8f9fa] rounded-lg p-3 border border-[#e9ecef]">
             <div className="flex items-center space-x-2">
               <TrendingDown className="w-4 h-4 text-[#34495e]" />
-              <span className="text-sm text-[#34495e]">Starting</span>
+              <span className="text-sm text-[#34495e]">{t.starting}</span>
             </div>
             <p className="font-bold text-[#2c3e50]">{formatCurrency(car.lowestBid)}</p>
           </div>
         </div>
 
-     
         {/* Time Status */}
-        <div className={`text-center py-2 rounded-lg border ${timeRemainingSeconds > 0 ? 'border-[#e9ecef]' : 'border-[#e9ecef]'} ${timeRemainingSeconds === 0 ? 'bg-[#f8f9fa] text-[#7f8c8d]' : 'bg-[#f8f9fa] text-[#2c3e50]'}`}>
+        <div className={`text-center py-2 rounded-lg border border-[#e9ecef] ${timeRemainingSeconds === 0 ? 'bg-[#f8f9fa] text-[#7f8c8d]' : 'bg-[#f8f9fa] text-[#2c3e50]'}`}>
           {timeRemainingSeconds > 0 ? (
-            <span className="font-semibold">
-              AUCTION RUNNING
-            </span>
+            <span className="font-semibold">{t.auctionRunning}</span>
           ) : (
-            <span className="font-bold">AUCTION ENDED</span>
+            <span className="font-bold">{t.auctionEnded}</span>
           )}
         </div>
       </div>
