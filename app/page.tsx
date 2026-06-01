@@ -12,7 +12,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import axiosInstance from '@/service/api';
 import { UserProfileMenu } from '@/components/ui/UserProfileMenu';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Header } from '@/components/ui/Header';
 import { useLanguage } from '@/contexts/LanguageContext';
 import lang from '@/locale';
 
