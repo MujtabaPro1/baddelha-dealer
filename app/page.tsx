@@ -143,7 +143,7 @@ export default function CarAuctionPlatform() {
             year: item.car?.year || new Date().getFullYear(),
             mileage: item.car?.mileage || 0,
             condition: item.car?.condition || 'Unknown',
-            image: item.coverImage || 'https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?auto=compress&cs=tinysrgb&w=800',
+            image: item.coverImage || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-6xXO7DsQ747UNVIJvDGOjgLu_w0G5mOPXg&s',
             startingBid: item.startingPrice || 0,
             currentBid: item.currentBid || item.startPrice || 0,
             highestBid: item.highestBid || item.currentBid || item.startPrice || 0,
