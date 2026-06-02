@@ -21,9 +21,10 @@ import {
   Wrench,
   Info,
   ChevronDown,
-  CheckCircle2Icon
+  CheckCircle2Icon,
 } from 'lucide-react';
 
+import { CrossCircledIcon } from '@radix-ui/react-icons';
 import axiosInstance from '@/service/api';
 import { inspectionData, numberWithCommas } from '@/lib/utils';
 import CarBodySvgView from '@/components/ui/CarBodyView';
