@@ -145,7 +145,7 @@ export default function CarAuctionPlatform() {
             condition: item.car?.condition || 'Unknown',
             image: item.coverImage || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-6xXO7DsQ747UNVIJvDGOjgLu_w0G5mOPXg&s',
             startingBid: item.startingPrice || 0,
-            currentBid: item.currentBid || item.startPrice || 0,
+            currentBid: item.currentBid || item.highestBid || item.startPrice || 0,
             highestBid: item.highestBid || item.currentBid || item.startPrice || 0,
             lowestBid: item.startPrice || 0,
             bidCount: item.bidCount || 0,
