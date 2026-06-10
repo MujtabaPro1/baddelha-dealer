@@ -379,7 +379,7 @@ const CarDetail: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <div className="text-3xl font-bold text-[#3d3d40]">
-                    SAR {numberWithCommas(car?.bookValue)}
+                    SAR {numberWithCommas(car?.sellingPrice)}
                   </div>
     
                 </div>
@@ -861,7 +861,7 @@ const CarDetail: React.FC = () => {
                 </h3>
                 <div className="flex items-center justify-between">
                   <span className="text-[#7f8c8d]">Seller's Price:</span>
-                  <span className="text-lg font-bold text-[#2c3e50]">SAR {numberWithCommas(car?.bookValue)}</span>
+                  <span className="text-lg font-bold text-[#2c3e50]">SAR {numberWithCommas(car?.sellingPrice)}</span>
                 </div>
               </div>
               
@@ -876,12 +876,12 @@ const CarDetail: React.FC = () => {
                       id="bidAmount" 
                       className="block w-full pl-12 pr-3 py-2 border border-[#e9ecef] rounded-md shadow-sm focus:ring-[#f39c12] focus:border-[#f39c12]" 
                       placeholder="Enter amount" 
-                      min={car?.bookValue} 
+                      min={car?.sellingPrice} 
                       step="1000"
                       onChange={(e) => {
                         const value = parseFloat(e.target.value);
-                        if (value < car?.bookValue) {
-                          e.target.setCustomValidity(`Bid must be at least SAR ${numberWithCommas(car?.bookValue)}`);
+                        if (value < car?.sellingPrice) {
+                          e.target.setCustomValidity(`Bid must be at least SAR ${numberWithCommas(car?.sellingPrice)}`);
                         } else {
                           e.target.setCustomValidity('');
                         }
@@ -889,7 +889,7 @@ const CarDetail: React.FC = () => {
                       required
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Minimum bid: SAR {numberWithCommas(car?.bookValue)}</p>
+                  <p className="text-xs text-gray-500 mt-1">Minimum bid: SAR {numberWithCommas(car?.sellingPrice)}</p>
                 </div>
           
               
@@ -901,8 +901,8 @@ const CarDetail: React.FC = () => {
                     const bidInput = document.getElementById('bidAmount') as HTMLInputElement;
                     const bidValue = parseFloat(bidInput.value);
                     
-                    if (!bidValue || bidValue < car?.bookValue) {
-                      alert(`Your bid must be at least SAR ${numberWithCommas(car?.bookValue)}`);
+                    if (!bidValue || bidValue < car?.sellingPrice) {
+                      alert(`Your bid must be at least SAR ${numberWithCommas(car?.sellingPrice)}`);
                       return false;
                     }
                     
