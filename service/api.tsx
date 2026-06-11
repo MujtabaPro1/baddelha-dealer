@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://service.baddelha.com.sa/api/';
+const isDevelop = false;
+const BASE_URL = isDevelop ? 'https://stg-service.bddelha.com' : 'https://service.baddelha.com.sa';
+
 
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL + '/api/',
   timeout: 100000, // 10 seconds
 });
 

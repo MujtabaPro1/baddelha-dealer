@@ -1,100 +1,102 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { createUser } from '@/services/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Mail, Lock, User, Building, Phone, FileText, MapPin, Globe } from 'lucide-react';
+import { Loader2, Mail, Lock, User, Building, MapPin, FileText, ChevronRight, ChevronLeft } from 'lucide-react';
 
 interface SignupFormProps {
   onSwitchToLogin: () => void;
-  loading?: boolean;
-  error?: string | null;
 }
 
+const KSA_CITIES = [
+  'Riyadh', 'Jeddah', 'Dammam', 'Medina', 'Mecca', 'Khobar', 'Dhahran', 'Qatif',
+  'Buraydah', 'Tabuk', 'Hail', 'Al Khobar', 'Yanbu', 'Jizan', 'Abha', 'Najran', 'Arar', 'Sakaka', 'Afif', 'Dilam'
+];
+
+type FormStep = 'personal' | 'contact' | 'company' | 'security';
+
 export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
-  const router = useRouter();
+  const [step, setStep] = useState<FormStep>('personal');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [stepErrors, setStepErrors] = useState<Record<string, string>>({});
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    company: '',
-    phone: '',
-    companyPhone: '',
-    location: '',
-    licenseNumber: '',
-    website: ''
+    firstName: '', lastName: '', email: '', phone: '',
+    companyPhone: '', company: '', location: '', licenseNumber: '', website: '',
+    password: '', confirmPassword: ''
   });
-  
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    setStepErrors(prev => ({ ...prev, [field]: '' }));
   };
 
-  const validateForm = () => {
+  const validateStep = (currentStep: FormStep): boolean => {
     const errors: Record<string, string> = {};
-    
-    if (!formData.firstName.trim()) errors.firstName = 'First name is required';
-    if (!formData.lastName.trim()) errors.lastName = 'Last name is required';
-    
-    if (!formData.email.trim()) {
-      errors.email = 'Email is required';
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      errors.email = 'Please enter a valid email address';
-    }
-    
-    if (!formData.phone.trim()) {
-      errors.phone = 'Phone number is required';
-    } else if (!/^[0-9]{9}$/.test(formData.phone.replace(/\s+/g, ''))) {
-      errors.phone = 'Please enter a valid 9-digit Saudi phone number';
+
+    if (currentStep === 'personal') {
+      if (!formData.firstName.trim()) errors.firstName = 'First name required';
+      if (!formData.lastName.trim()) errors.lastName = 'Last name required';
+      if (!formData.email.trim()) {
+        errors.email = 'Email required';
+      } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+        errors.email = 'Invalid email';
+      }
+    } else if (currentStep === 'contact') {
+      if (!formData.phone.trim()) {
+        errors.phone = 'Phone required';
+      } else if (!/^[0-9]{9}$/.test(formData.phone.replace(/\s+/g, ''))) {
+        errors.phone = 'Invalid phone (9 digits)';
+      }
+      if (formData.companyPhone && !/^[0-9]{9}$/.test(formData.companyPhone.replace(/\s+/g, ''))) {
+        errors.companyPhone = 'Invalid phone (9 digits)';
+      }
+    } else if (currentStep === 'company') {
+      if (!formData.location.trim()) errors.location = 'City required';
+      if (formData.website && !/^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?(\.[a-zA-Z]{2,})+$/.test(formData.website)) {
+        errors.website = 'Invalid domain';
+      }
+    } else if (currentStep === 'security') {
+      if (!formData.password) {
+        errors.password = 'Password required';
+      } else if (formData.password.length < 6) {
+        errors.password = 'Min 6 characters';
+      }
+      if (formData.password !== formData.confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match';
+      }
     }
 
-    if (formData.companyPhone && !/^[0-9]{9}$/.test(formData.companyPhone.replace(/\s+/g, ''))) {
-      errors.companyPhone = 'Please enter a valid 9-digit Saudi phone number';
-    }
-    
-    if (!formData.location.trim()) errors.location = 'Location is required';
-
-    
-    if (formData.website && !/^https?:\/\/.+/.test(formData.website)) {
-      errors.website = 'Please enter a valid URL (starting with http:// or https://)';
-    }
-    
-    if (!formData.password) {
-      errors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
-    }
-    
-    setValidationErrors(errors);
+    setStepErrors(errors);
     return Object.keys(errors).length === 0;
+  };
+
+  const nextStep = () => {
+    if (!validateStep(step)) return;
+    const steps: FormStep[] = ['personal', 'contact', 'company', 'security'];
+    const currentIndex = steps.indexOf(step);
+    if (currentIndex < steps.length - 1) setStep(steps[currentIndex + 1]);
+  };
+
+  const prevStep = () => {
+    const steps: FormStep[] = ['personal', 'contact', 'company', 'security'];
+    const currentIndex = steps.indexOf(step);
+    if (currentIndex > 0) setStep(steps[currentIndex - 1]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccessMessage(null);
-    
-    if (!validateForm()) {
-      return;
-    }
-    
+    if (!validateStep('security')) return;
+
     setLoading(true);
-    
     try {
       await createUser({
         firstName: formData.firstName,
@@ -103,298 +105,191 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
         phone: `+966${formData.phone}`,
         password: formData.password,
         company: formData.company,
-        companyPhone: formData.companyPhone ?  `+966${formData.companyPhone}`: '',
+        companyPhone: formData.companyPhone ? `+966${formData.companyPhone}` : '',
         location: formData.location,
         licenseNumber: formData.licenseNumber,
-        website: formData.website || undefined,
+        website: formData.website ? `https://${formData.website}` : undefined,
       });
-      
-      setSuccessMessage('Account created successfully! Your account is pending verification. Please login to complete your profile.');
-      
-      // Redirect to login after a short delay
-      setTimeout(() => {
-        onSwitchToLogin();
-      }, 2000);
-      
+      setSuccessMessage('Account created! Pending verification.');
+      setTimeout(() => onSwitchToLogin(), 2000);
     } catch (err: any) {
-      setError(err.message || 'Failed to create account. Please try again.');
+      const apiMessage = err?.response?.data?.message || err?.message || 'Failed to create account';
+      let displayError = apiMessage;
+
+      if (apiMessage.toLowerCase().includes('credentials') || apiMessage.toLowerCase().includes('taken') || apiMessage.toLowerCase().includes('already')) {
+        displayError = `${apiMessage}. Already have an account? Sign in instead.`;
+      }
+
+      setError(displayError);
     } finally {
       setLoading(false);
     }
   };
 
-  const passwordsMatch = formData.password === formData.confirmPassword;
+  const StepIndicator = () => (
+    <div className="flex justify-between mb-6">
+      {(['personal', 'contact', 'company', 'security'] as FormStep[]).map((s, i) => (
+        <div key={s} className="flex flex-col items-center flex-1">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold mb-1 ${
+            step === s ? 'bg-[#ee3c48] text-white' : i < ['personal', 'contact', 'company', 'security'].indexOf(step) ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'
+          }`}>
+            {i + 1}
+          </div>
+          <span className="text-xs text-gray-600 text-center">
+            {s === 'personal' && 'Personal'} {s === 'contact' && 'Contact'} {s === 'company' && 'Company'} {s === 'security' && 'Security'}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="space-y-1">
+      <CardHeader className="pb-3">
         <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
-        <p className="text-sm text-muted-foreground text-center">
-          Join our dealer network
-        </p>
+        <p className="text-xs text-muted-foreground text-center mt-1">Join our dealer network</p>
+        <StepIndicator />
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+          {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
+          {successMessage && <Alert className="bg-green-50 border-green-200"><AlertDescription className="text-green-800">{successMessage}</AlertDescription></Alert>}
+
+          {step === 'personal' && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="firstName" placeholder="John" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} className={`pl-10 ${stepErrors.firstName ? 'border-red-500' : ''}`} />
+                </div>
+                {stepErrors.firstName && <p className="text-xs text-red-500">{stepErrors.firstName}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="lastName" placeholder="Doe" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} className={`pl-10 ${stepErrors.lastName ? 'border-red-500' : ''}`} />
+                </div>
+                {stepErrors.lastName && <p className="text-xs text-red-500">{stepErrors.lastName}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="email" type="email" placeholder="john@example.com" value={formData.email} onChange={(e) => handleChange('email', e.target.value)} className={`pl-10 ${stepErrors.email ? 'border-red-500' : ''}`} />
+                </div>
+                {stepErrors.email && <p className="text-xs text-red-500">{stepErrors.email}</p>}
+              </div>
+            </>
           )}
-          
-          {successMessage && (
-            <Alert className="bg-green-50 border-green-200 text-green-800">
-              <AlertDescription>{successMessage}</AlertDescription>
-            </Alert>
+
+          {step === 'contact' && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone <span className="text-red-500">*</span></Label>
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 text-sm bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">+966</span>
+                  <Input id="phone" type="tel" placeholder="501234567" value={formData.phone} onChange={(e) => handleChange('phone', e.target.value)} className={`rounded-l-none ${stepErrors.phone ? 'border-red-500' : ''}`} />
+                </div>
+                {stepErrors.phone && <p className="text-xs text-red-500">{stepErrors.phone}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="companyPhone">Company Phone</Label>
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 text-sm bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">+966</span>
+                  <Input id="companyPhone" type="tel" placeholder="501111111" value={formData.companyPhone} onChange={(e) => handleChange('companyPhone', e.target.value)} className={`rounded-l-none ${stepErrors.companyPhone ? 'border-red-500' : ''}`} />
+                </div>
+                {stepErrors.companyPhone && <p className="text-xs text-red-500">{stepErrors.companyPhone}</p>}
+              </div>
+            </>
           )}
-          
-          <div className="grid grid-cols-1  gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="firstName">First Name
-                <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
-              </Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  id="firstName"
-                  placeholder="Please enter first name"
-                  value={formData.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
-                  className={`pl-10 ${validationErrors.firstName ? 'border-red-500' : ''}`}
-                  required
-                />
-                {validationErrors.firstName && (
-                  <p className="text-xs text-red-500 mt-1">{validationErrors.firstName}</p>
-                )}
+
+          {step === 'company' && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="company">Company Name</Label>
+                <div className="relative">
+                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="company" placeholder="Dealer Company LLC" value={formData.company} onChange={(e) => handleChange('company', e.target.value)} className="pl-10" />
+                </div>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name
-                            <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
-              </Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  id="lastName"
-                  placeholder="Please enter last name"
-                  value={formData.lastName}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
-                  className={`pl-10 ${validationErrors.lastName ? 'border-red-500' : ''}`}
-                  required
-                />
-                {validationErrors.lastName && (
-                  <p className="text-xs text-red-500 mt-1">{validationErrors.lastName}</p>
-                )}
+
+              <div className="space-y-2">
+                <Label htmlFor="location">City <span className="text-red-500">*</span></Label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+                  <select id="location" value={formData.location} onChange={(e) => handleChange('location', e.target.value)} className={`w-full pl-10 pr-3 py-2 border rounded-md text-sm bg-white ${stepErrors.location ? 'border-red-500' : 'border-gray-300'}`}>
+                    <option value="">Select city</option>
+                    {KSA_CITIES.map(city => <option key={city} value={city}>{city}</option>)}
+                  </select>
+                </div>
+                {stepErrors.location && <p className="text-xs text-red-500">{stepErrors.location}</p>}
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone
-                            <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
-              </Label>
-              <div className="flex">
-                <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
-                  +966
-                </span>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="501 XXX XXX"
-                  value={formData.phone}
-                  onChange={(e) => handleChange('phone', e.target.value)}
-                  className={`rounded-l-none ${validationErrors.phone ? 'border-red-500' : ''}`}
-                  required
-                />
+
+              <div className="space-y-2">
+                <Label htmlFor="license">License Number</Label>
+                <div className="relative">
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="license" placeholder="a234234" value={formData.licenseNumber} onChange={(e) => handleChange('licenseNumber', e.target.value)} className="pl-10" />
+                </div>
               </div>
-              {validationErrors.phone && (
-                <p className="text-xs text-red-500 mt-1">{validationErrors.phone}</p>
-              )}
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="email">Email
-              <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
-            </Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                className={`pl-10 ${validationErrors.email ? 'border-red-500' : ''}`}
-                required
-              />
-              {validationErrors.email && (
-                <p className="text-xs text-red-500 mt-1">{validationErrors.email}</p>
-              )}
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="company">Company Name</Label>
-            <div className="relative">
-              <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                id="company"
-                placeholder="Dealer Company LLC"
-                value={formData.company}
-                onChange={(e) => handleChange('company', e.target.value)}
-                className={`pl-10 ${validationErrors.company ? 'border-red-500' : ''}`}
-              />
-              {validationErrors.company && (
-                <p className="text-xs text-red-500 mt-1">{validationErrors.company}</p>
-              )}
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="companyPhone">Company Phone</Label>
-            <div className="flex">
-              <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
-                +966
-              </span>
-              <Input
-                id="companyPhone"
-                type="tel"
-                placeholder="511111111"
-                value={formData.companyPhone}
-                onChange={(e) => handleChange('companyPhone', e.target.value)}
-                className={`rounded-l-none ${validationErrors.companyPhone ? 'border-red-500' : ''}`}
-              />
-            </div>
-            {validationErrors.companyPhone && (
-              <p className="text-xs text-red-500 mt-1">{validationErrors.companyPhone}</p>
+
+              <div className="space-y-2">
+                <Label htmlFor="website">Website (Optional)</Label>
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 text-sm bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">https://</span>
+                  <Input id="website" type="text" placeholder="example.com" value={formData.website} onChange={(e) => handleChange('website', e.target.value)} className={`rounded-l-none ${stepErrors.website ? 'border-red-500' : ''}`} />
+                </div>
+                {stepErrors.website && <p className="text-xs text-red-500">{stepErrors.website}</p>}
+              </div>
+            </>
+          )}
+
+          {step === 'security' && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="password" type="password" placeholder="Min 6 characters" value={formData.password} onChange={(e) => handleChange('password', e.target.value)} className={`pl-10 ${stepErrors.password ? 'border-red-500' : ''}`} />
+                </div>
+                {stepErrors.password && <p className="text-xs text-red-500">{stepErrors.password}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password <span className="text-red-500">*</span></Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input id="confirmPassword" type="password" placeholder="Confirm password" value={formData.confirmPassword} onChange={(e) => handleChange('confirmPassword', e.target.value)} className={`pl-10 ${stepErrors.confirmPassword ? 'border-red-500' : ''}`} />
+                </div>
+                {stepErrors.confirmPassword && <p className="text-xs text-red-500">{stepErrors.confirmPassword}</p>}
+              </div>
+            </>
+          )}
+
+          <div className="flex gap-2 pt-4">
+            {step !== 'personal' && (
+              <Button type="button" variant="outline" className="flex-1" onClick={prevStep}>
+                <ChevronLeft className="w-4 h-4 mr-2" /> Back
+              </Button>
             )}
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="location">Location
-                          <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
-            </Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                id="location"
-                placeholder="Riyadh, Saudi Arabia"
-                value={formData.location}
-                onChange={(e) => handleChange('location', e.target.value)}
-                className={`pl-10 ${validationErrors.location ? 'border-red-500' : ''}`}
-                required
-              />
-              {validationErrors.location && (
-                <p className="text-xs text-red-500 mt-1">{validationErrors.location}</p>
-              )}
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="license">License Number</Label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                id="license"
-                placeholder="a234234"
-                value={formData.licenseNumber}
-                onChange={(e) => handleChange('licenseNumber', e.target.value)}
-                className={`pl-10 ${validationErrors.licenseNumber ? 'border-red-500' : ''}`}
-              />
-              {validationErrors.licenseNumber && (
-                <p className="text-xs text-red-500 mt-1">{validationErrors.licenseNumber}</p>
-              )}
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="website">Website (Optional)</Label>
-            <div className="relative">
-              <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                id="website"
-                type="url"
-                placeholder="https://dealer-company.example"
-                value={formData.website}
-                onChange={(e) => handleChange('website', e.target.value)}
-                className={`pl-10 ${validationErrors.website ? 'border-red-500' : ''}`}
-              />
-              {validationErrors.website && (
-                <p className="text-xs text-red-500 mt-1">{validationErrors.website}</p>
-              )}
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="password">Password
-                            <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={(e) => handleChange('password', e.target.value)}
-                  className={`pl-10 ${validationErrors.password ? 'border-red-500' : ''}`}
-                  required
-                />
-                {validationErrors.password && (
-                  <p className="text-xs text-red-500 mt-1">{validationErrors.password}</p>
-                )}
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm
-                            <span className='!text-[#ff0000] ml-1 mr-1'>*</span>
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Confirm"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                  className={`pl-10 ${validationErrors.confirmPassword ? 'border-red-500' : ''}`}
-                  required
-                />
-                {validationErrors.confirmPassword && (
-                  <p className="text-xs text-red-500 mt-1">{validationErrors.confirmPassword}</p>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          
-          <Button 
-            type="submit" 
-            className="w-full bg-[#ee3c48] hover:bg-[#ee3c48] text-white" 
-            disabled={loading}>
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating account...
-              </>
+            {step !== 'security' ? (
+              <Button type="button" className="flex-1 bg-[#ee3c48] hover:bg-[#d4343e]" onClick={nextStep}>
+                Next <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
             ) : (
-              'Create Account'
+              <Button type="submit" className="flex-1 bg-[#ee3c48] hover:bg-[#d4343e]" disabled={loading}>
+                {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Creating...</> : 'Create Account'}
+              </Button>
             )}
-          </Button>
-          
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              Already have an account?{' '}
-              <button
-                type="button"
-                onClick={onSwitchToLogin}
-                className="text-[#ee3c48] hover:underline font-medium"
-              >
-                Sign in
-              </button>
-            </p>
+          </div>
+
+          <div className="text-center text-sm text-muted-foreground pt-2">
+            Already have an account? <button type="button" onClick={onSwitchToLogin} className="text-[#ee3c48] hover:underline font-medium">Sign in</button>
           </div>
         </form>
       </CardContent>
