@@ -4,12 +4,9 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Mail, Lock } from 'lucide-react';
+import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import lang from '@/locale';
-import Image from 'next/image';
 
 interface LoginFormProps {
   onLogin: (email: string, password: string) => Promise<void>;
@@ -21,6 +18,8 @@ interface LoginFormProps {
 export function LoginForm({ onLogin, onSwitchToSignup, loading, error }: LoginFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const { language } = useLanguage();
   const t = lang[language];
 
@@ -30,88 +29,121 @@ export function LoginForm({ onLogin, onSwitchToSignup, loading, error }: LoginFo
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      
-      <CardHeader className="space-y-1">
-                          <Image 
-                    src={"/logo.png"} 
-                    alt="Logo" 
-                    width={120} 
-                    height={120} 
-                    className="mx-auto w-[120px] h-[120px] object-cover"
-                  />
-        <CardTitle className="text-2xl font-bold text-center">{t.welcomeBack}</CardTitle>
-        <p className="text-sm text-muted-foreground text-center">
-          {t.signInToAccount}
-        </p>
-      
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+    <div className="space-y-8">
+      {/* Heading */}
+      <div className="space-y-3">
+        <h1 className="text-5xl font-black text-gray-900 tracking-tight leading-tight">{t.welcomeBack}</h1>
+        <p className="text-lg text-gray-600 font-light">{t.signInToAccount}</p>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Error Alert */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-sm text-red-700 font-medium">{error}</p>
+          </div>
+        )}
+
+        {/* Email Field */}
+        <div className="space-y-3">
+          <Label htmlFor="email" className="text-sm font-bold text-gray-900">
+            {t.email}
+          </Label>
+          <div className="relative">
+            <Mail className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@badelha.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="ps-11 h-11 rounded-lg border border-gray-300 bg-white hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Password Field */}
+        <div className="space-y-3">
+          <Label htmlFor="password" className="text-sm font-bold text-gray-900">
+            {t.password}
+          </Label>
+          <div className="relative">
+            <Lock className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="ps-11 pe-11 h-11 rounded-lg border border-gray-300 bg-white hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Remember Me */}
+        <div className="flex items-center pt-2">
+          <input
+            id="rememberMe"
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded cursor-pointer accent-blue-600"
+          />
+          <label htmlFor="rememberMe" className="ms-2.5 text-sm text-gray-700 cursor-pointer">
+            Remember me
+          </label>
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full h-11  bg-gradient-to-br from-[#001f4d] via-[#003B7E] to-[#0055b3] hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-75 disabled:cursor-not-allowed mt-6"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="me-2 h-5 w-5 animate-spin" />
+              {t.signingIn}
+            </>
+          ) : (
+            t.signIn
           )}
+        </Button>
+      </form>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">{t.email}</Label>
-            <div className="relative">
-              <Mail className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="x@baddelha.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="ps-10"
-                required
-              />
-            </div>
-          </div>
+      {/* Sign Up Link */}
+      <div className="text-center border-t border-gray-200 pt-6">
+        <p className="text-gray-700">
+          {t.dontHaveAnAccount}{' '}
+          <button
+            type="button"
+            onClick={onSwitchToSignup}
+            className="text-blue-600  hover:text-blue-700 font-semibold transition-colors"
+          >
+            {t.signUp}
+          </button>
+        </p>
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">{t.password}</Label>
-            <div className="relative">
-              <Lock className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                id="password"
-                type="password"
-                placeholder={t.enterYourPassword}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="ps-10"
-                required
-              />
-            </div>
-          </div>
-
-          <Button type="submit" className="w-full bg-[#ee3c48]" disabled={loading}>
-            {loading ? (
-              <>
-                <Loader2 className="me-2 h-4 w-4 animate-spin" />
-                {t.signingIn}
-              </>
-            ) : (
-              t.signIn
-            )}
-          </Button>
-
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              {t.dontHaveAnAccount}{' '}
-              <button
-                type="button"
-                onClick={onSwitchToSignup}
-                className="text-[#ee3c48] hover:underline font-medium"
-              >
-                {t.signUp}
-              </button>
-            </p>
-          </div>
-
-        </form>
-      </CardContent>
-    </Card>
+      {/* Footer */}
+      <div className="text-center pt-2">
+        <p className="text-xs text-gray-500">© 2026 Badelha. All rights reserved.</p>
+      </div>
+    </div>
   );
 }

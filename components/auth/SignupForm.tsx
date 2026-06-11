@@ -5,8 +5,6 @@ import { createUser } from '@/services/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Mail, Lock, User, Building, MapPin, FileText, ChevronRight, ChevronLeft } from 'lucide-react';
 
 interface SignupFormProps {
@@ -126,173 +124,363 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
     }
   };
 
+  const steps: FormStep[] = ['personal', 'contact', 'company', 'security'];
+  const currentStepIndex = steps.indexOf(step);
+
   const StepIndicator = () => (
-    <div className="flex justify-between mb-6">
-      {(['personal', 'contact', 'company', 'security'] as FormStep[]).map((s, i) => (
-        <div key={s} className="flex flex-col items-center flex-1">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold mb-1 ${
-            step === s ? 'bg-[#ee3c48] text-white' : i < ['personal', 'contact', 'company', 'security'].indexOf(step) ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'
-          }`}>
-            {i + 1}
+    <div className="space-y-3 mb-8">
+      {/* Progress Bar */}
+      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-br from-[#001f4d] via-[#003B7E] to-[#0055b3] transition-all duration-300"
+          style={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
+        ></div>
+      </div>
+
+      {/* Step Indicators */}
+      <div className="flex justify-between">
+        {steps.map((s, i) => (
+          <div key={s} className="flex flex-col items-center flex-1">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold mb-2 transition-all ${
+                i < currentStepIndex
+                  ? 'bg-green-500 text-white'
+                  : i === currentStepIndex
+                  ? 'bg-gradient-to-br from-[#001f4d] via-[#003B7E] to-[#0055b3] text-white'
+                  : 'bg-gray-200 text-gray-600'
+              }`}
+            >
+              {i < currentStepIndex ? '✓' : i + 1}
+            </div>
+            <span className="text-xs font-medium text-gray-700 text-center">
+              {s === 'personal' && 'Personal'} {s === 'contact' && 'Contact'} {s === 'company' && 'Company'} {s === 'security' && 'Security'}
+            </span>
           </div>
-          <span className="text-xs text-gray-600 text-center">
-            {s === 'personal' && 'Personal'} {s === 'contact' && 'Contact'} {s === 'company' && 'Company'} {s === 'security' && 'Security'}
-          </span>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
-        <p className="text-xs text-muted-foreground text-center mt-1">Join our dealer network</p>
+    <div className="space-y-8">
+      {/* Heading */}
+      <div className="space-y-3">
+        <h1 className="text-5xl font-black text-gray-900 tracking-tight leading-tight">Create Account</h1>
+        <p className="text-lg text-gray-600 font-light">Join our dealer network</p>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Step Indicator */}
         <StepIndicator />
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
-          {successMessage && <Alert className="bg-green-50 border-green-200"><AlertDescription className="text-green-800">{successMessage}</AlertDescription></Alert>}
 
-          {step === 'personal' && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input id="firstName" placeholder="John" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} className={`pl-10 ${stepErrors.firstName ? 'border-red-500' : ''}`} />
-                </div>
-                {stepErrors.firstName && <p className="text-xs text-red-500">{stepErrors.firstName}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input id="lastName" placeholder="Doe" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} className={`pl-10 ${stepErrors.lastName ? 'border-red-500' : ''}`} />
-                </div>
-                {stepErrors.lastName && <p className="text-xs text-red-500">{stepErrors.lastName}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input id="email" type="email" placeholder="john@example.com" value={formData.email} onChange={(e) => handleChange('email', e.target.value)} className={`pl-10 ${stepErrors.email ? 'border-red-500' : ''}`} />
-                </div>
-                {stepErrors.email && <p className="text-xs text-red-500">{stepErrors.email}</p>}
-              </div>
-            </>
-          )}
-
-          {step === 'contact' && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone <span className="text-red-500">*</span></Label>
-                <div className="flex">
-                  <span className="inline-flex items-center px-3 text-sm bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">+966</span>
-                  <Input id="phone" type="tel" placeholder="501234567" value={formData.phone} onChange={(e) => handleChange('phone', e.target.value)} className={`rounded-l-none ${stepErrors.phone ? 'border-red-500' : ''}`} />
-                </div>
-                {stepErrors.phone && <p className="text-xs text-red-500">{stepErrors.phone}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="companyPhone">Company Phone</Label>
-                <div className="flex">
-                  <span className="inline-flex items-center px-3 text-sm bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">+966</span>
-                  <Input id="companyPhone" type="tel" placeholder="501111111" value={formData.companyPhone} onChange={(e) => handleChange('companyPhone', e.target.value)} className={`rounded-l-none ${stepErrors.companyPhone ? 'border-red-500' : ''}`} />
-                </div>
-                {stepErrors.companyPhone && <p className="text-xs text-red-500">{stepErrors.companyPhone}</p>}
-              </div>
-            </>
-          )}
-
-          {step === 'company' && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="company">Company Name</Label>
-                <div className="relative">
-                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input id="company" placeholder="Dealer Company LLC" value={formData.company} onChange={(e) => handleChange('company', e.target.value)} className="pl-10" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="location">City <span className="text-red-500">*</span></Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
-                  <select id="location" value={formData.location} onChange={(e) => handleChange('location', e.target.value)} className={`w-full pl-10 pr-3 py-2 border rounded-md text-sm bg-white ${stepErrors.location ? 'border-red-500' : 'border-gray-300'}`}>
-                    <option value="">Select city</option>
-                    {KSA_CITIES.map(city => <option key={city} value={city}>{city}</option>)}
-                  </select>
-                </div>
-                {stepErrors.location && <p className="text-xs text-red-500">{stepErrors.location}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="license">License Number</Label>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input id="license" placeholder="a234234" value={formData.licenseNumber} onChange={(e) => handleChange('licenseNumber', e.target.value)} className="pl-10" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="website">Website (Optional)</Label>
-                <div className="flex">
-                  <span className="inline-flex items-center px-3 text-sm bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">https://</span>
-                  <Input id="website" type="text" placeholder="example.com" value={formData.website} onChange={(e) => handleChange('website', e.target.value)} className={`rounded-l-none ${stepErrors.website ? 'border-red-500' : ''}`} />
-                </div>
-                {stepErrors.website && <p className="text-xs text-red-500">{stepErrors.website}</p>}
-              </div>
-            </>
-          )}
-
-          {step === 'security' && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password <span className="text-red-500">*</span></Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input id="password" type="password" placeholder="Min 6 characters" value={formData.password} onChange={(e) => handleChange('password', e.target.value)} className={`pl-10 ${stepErrors.password ? 'border-red-500' : ''}`} />
-                </div>
-                {stepErrors.password && <p className="text-xs text-red-500">{stepErrors.password}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password <span className="text-red-500">*</span></Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input id="confirmPassword" type="password" placeholder="Confirm password" value={formData.confirmPassword} onChange={(e) => handleChange('confirmPassword', e.target.value)} className={`pl-10 ${stepErrors.confirmPassword ? 'border-red-500' : ''}`} />
-                </div>
-                {stepErrors.confirmPassword && <p className="text-xs text-red-500">{stepErrors.confirmPassword}</p>}
-              </div>
-            </>
-          )}
-
-          <div className="flex gap-2 pt-4">
-            {step !== 'personal' && (
-              <Button type="button" variant="outline" className="flex-1" onClick={prevStep}>
-                <ChevronLeft className="w-4 h-4 mr-2" /> Back
-              </Button>
-            )}
-            {step !== 'security' ? (
-              <Button type="button" className="flex-1 bg-[#ee3c48] hover:bg-[#d4343e]" onClick={nextStep}>
-                Next <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            ) : (
-              <Button type="submit" className="flex-1 bg-[#ee3c48] hover:bg-[#d4343e]" disabled={loading}>
-                {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Creating...</> : 'Create Account'}
-              </Button>
-            )}
+        {/* Error Alert */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-sm text-red-700 font-medium">{error}</p>
           </div>
+        )}
 
-          <div className="text-center text-sm text-muted-foreground pt-2">
-            Already have an account? <button type="button" onClick={onSwitchToLogin} className="text-[#ee3c48] hover:underline font-medium">Sign in</button>
+        {/* Success Alert */}
+        {successMessage && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <p className="text-sm text-green-700 font-medium">{successMessage}</p>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+        )}
+
+        {/* Personal Step */}
+        {step === 'personal' && (
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <Label htmlFor="firstName" className="text-sm font-bold text-gray-900">
+                First Name <span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <User className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="firstName"
+                  placeholder="John"
+                  value={formData.firstName}
+                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  className={`ps-11 h-11 rounded-lg border transition-all ${
+                    stepErrors.firstName ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {stepErrors.firstName && <p className="text-xs text-red-500 font-medium">{stepErrors.firstName}</p>}
+            </div>
+
+            <div className="space-y-2.5">
+              <Label htmlFor="lastName" className="text-sm font-semibold text-gray-900">
+                Last Name <span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <User className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="lastName"
+                  placeholder="Doe"
+                  value={formData.lastName}
+                  onChange={(e) => handleChange('lastName', e.target.value)}
+                  className={`ps-11 h-11 rounded-lg border transition-all ${
+                    stepErrors.lastName ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {stepErrors.lastName && <p className="text-xs text-red-500 font-medium">{stepErrors.lastName}</p>}
+            </div>
+
+            <div className="space-y-2.5">
+              <Label htmlFor="email" className="text-sm font-semibold text-gray-900">
+                Email <span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <Mail className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  value={formData.email}
+                  onChange={(e) => handleChange('email', e.target.value)}
+                  className={`ps-11 h-11 rounded-lg border transition-all ${
+                    stepErrors.email ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {stepErrors.email && <p className="text-xs text-red-500 font-medium">{stepErrors.email}</p>}
+            </div>
+          </div>
+        )}
+
+        {/* Contact Step */}
+        {step === 'contact' && (
+          <div className="space-y-4">
+            <div className="space-y-2.5">
+              <Label htmlFor="phone" className="text-sm font-semibold text-gray-900">
+                Phone <span className="text-red-500">*</span>
+              </Label>
+              <div className="flex">
+                <span className="inline-flex items-center px-3 text-sm bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-600 font-medium">+966</span>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="501234567"
+                  value={formData.phone}
+                  onChange={(e) => handleChange('phone', e.target.value)}
+                  className={`rounded-l-none h-11 border transition-all ${
+                    stepErrors.phone ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {stepErrors.phone && <p className="text-xs text-red-500 font-medium">{stepErrors.phone}</p>}
+            </div>
+
+            <div className="space-y-2.5">
+              <Label htmlFor="companyPhone" className="text-sm font-semibold text-gray-900">
+                Company Phone
+              </Label>
+              <div className="flex">
+                <span className="inline-flex items-center px-3 text-sm bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-600 font-medium">+966</span>
+                <Input
+                  id="companyPhone"
+                  type="tel"
+                  placeholder="501111111"
+                  value={formData.companyPhone}
+                  onChange={(e) => handleChange('companyPhone', e.target.value)}
+                  className={`rounded-l-none h-11 border transition-all ${
+                    stepErrors.companyPhone ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {stepErrors.companyPhone && <p className="text-xs text-red-500 font-medium">{stepErrors.companyPhone}</p>}
+            </div>
+          </div>
+        )}
+
+        {/* Company Step */}
+        {step === 'company' && (
+          <div className="space-y-4">
+            <div className="space-y-2.5">
+              <Label htmlFor="company" className="text-sm font-semibold text-gray-900">
+                Company Name
+              </Label>
+              <div className="relative">
+                <Building className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="company"
+                  placeholder="Dealer Company LLC"
+                  value={formData.company}
+                  onChange={(e) => handleChange('company', e.target.value)}
+                  className="ps-11 h-11 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-blue-500 transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2.5">
+              <Label htmlFor="location" className="text-sm font-semibold text-gray-900">
+                City <span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <MapPin className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                <select
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => handleChange('location', e.target.value)}
+                  className={`w-full ps-11 pr-3 h-11 rounded-lg border text-sm bg-white transition-all ${
+                    stepErrors.location ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                >
+                  <option value="">Select city</option>
+                  {KSA_CITIES.map(city => <option key={city} value={city}>{city}</option>)}
+                </select>
+              </div>
+              {stepErrors.location && <p className="text-xs text-red-500 font-medium">{stepErrors.location}</p>}
+            </div>
+
+            <div className="space-y-2.5">
+              <Label htmlFor="license" className="text-sm font-semibold text-gray-900">
+                License Number
+              </Label>
+              <div className="relative">
+                <FileText className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="license"
+                  placeholder="a234234"
+                  value={formData.licenseNumber}
+                  onChange={(e) => handleChange('licenseNumber', e.target.value)}
+                  className="ps-11 h-11 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-blue-500 transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2.5">
+              <Label htmlFor="website" className="text-sm font-semibold text-gray-900">
+                Website
+              </Label>
+              <div className="flex">
+                <span className="inline-flex items-center px-3 text-sm bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-600 font-medium">https://</span>
+                <Input
+                  id="website"
+                  type="text"
+                  placeholder="example.com"
+                  value={formData.website}
+                  onChange={(e) => handleChange('website', e.target.value)}
+                  className={`rounded-l-none h-11 border transition-all ${
+                    stepErrors.website ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {stepErrors.website && <p className="text-xs text-red-500 font-medium">{stepErrors.website}</p>}
+            </div>
+          </div>
+        )}
+
+        {/* Security Step */}
+        {step === 'security' && (
+          <div className="space-y-4">
+            <div className="space-y-2.5">
+              <Label htmlFor="password" className="text-sm font-semibold text-gray-900">
+                Password <span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <Lock className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Min 6 characters"
+                  value={formData.password}
+                  onChange={(e) => handleChange('password', e.target.value)}
+                  className={`ps-11 h-11 rounded-lg border transition-all ${
+                    stepErrors.password ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {stepErrors.password && <p className="text-xs text-red-500 font-medium">{stepErrors.password}</p>}
+            </div>
+
+            <div className="space-y-2.5">
+              <Label htmlFor="confirmPassword" className="text-sm font-semibold text-gray-900">
+                Confirm Password <span className="text-red-500">*</span>
+              </Label>
+              <div className="relative">
+                <Lock className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                  className={`ps-11 h-11 rounded-lg border transition-all ${
+                    stepErrors.confirmPassword ? 'border-red-500' : 'border-gray-300 hover:border-gray-400 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {stepErrors.confirmPassword && <p className="text-xs text-red-500 font-medium">{stepErrors.confirmPassword}</p>}
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+              <p className="text-xs text-blue-900 font-medium">
+                ✓ Your account will be reviewed and verified by our team before activation.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Buttons */}
+        <div className="flex gap-3 pt-2">
+          {step !== 'personal' && (
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 h-11 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-all"
+              onClick={prevStep}
+            >
+              <ChevronLeft className="w-5 h-5 me-2" /> Back
+            </Button>
+          )}
+          {step !== 'security' ? (
+            <Button
+              type="button"
+              className="flex-1 h-11  bg-gradient-to-br from-[#001f4d] via-[#003B7E] to-[#0055b3] hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-sm hover:shadow-md"
+              onClick={nextStep}
+            >
+              Next <ChevronRight className="w-5 h-5 ms-2" />
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              className="flex-1 h-11  bg-gradient-to-br from-[#001f4d] via-[#003B7E] to-[#0055b3] hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-75 disabled:cursor-not-allowed"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 me-2 animate-spin" /> Creating...
+                </>
+              ) : (
+                'Create Account'
+              )}
+            </Button>
+          )}
+        </div>
+
+        {/* Sign In Link */}
+        <div className="text-center border-t border-gray-200 pt-6">
+          <p className="text-gray-700">
+            Already have an account?{' '}
+            <button
+              type="button"
+              onClick={onSwitchToLogin}
+              className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+            >
+              Sign in
+            </button>
+          </p>
+        </div>
+      </form>
+
+      {/* Footer */}
+      <div className="text-center pt-2">
+        <p className="text-xs text-gray-500">© 2026 Badelha. All rights reserved.</p>
+      </div>
+    </div>
   );
 }
