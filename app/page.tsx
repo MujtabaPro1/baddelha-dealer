@@ -135,13 +135,14 @@ export default function CarAuctionPlatform() {
         const mappedCars: Car[] = response.data.data.map((item: any) => {
           // Calculate time remaining in seconds from endDate
           
+          console.log(item);
           return {
             carId: item.car?.id,
             id: item.id.toString(),
             make: item.car?.make || 'Unknown',
             model: item.car?.model || 'Unknown',
             year: item.car?.year || new Date().getFullYear(),
-            mileage: item.car?.mileage || 0,
+            mileage: item.car?.exactMileage ||  item.car?.mileage ||  0,
             condition: item.car?.condition || 'Unknown',
             image: item.coverImage || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-6xXO7DsQ747UNVIJvDGOjgLu_w0G5mOPXg&s',
             startingBid: item.startingPrice || 0,
@@ -153,7 +154,7 @@ export default function CarAuctionPlatform() {
             vin: item.car?.vin || 'Unknown',
             engine: item.car?.engine || 'Unknown',
             transmission: item.car?.transmission || 'Automatic',
-            location: item.car?.location || 'Saudi Arabia',
+            location: item?.location || 'Saudi Arabia',
             color: item.car?.color || 'Unknown',
             fuelType: item.car?.fuelType || 'Petrol',
             drivetrain: item.car?.drivetrain || 'Unknown',
@@ -161,6 +162,7 @@ export default function CarAuctionPlatform() {
             doors: item.car?.doors || 4,
             seats: item.car?.seats || 5,
             features: item.car?.features || [],
+            totalBids: item?.totalBids || 0,
             inspectionReport: {
               exterior: item.car?.inspectionReport?.exterior || 'No data available',
               interior: item.car?.inspectionReport?.interior || 'No data available',
@@ -573,7 +575,7 @@ export default function CarAuctionPlatform() {
                           </div>
                           <div className="text-right">
                             <p className="text-sm text-slate-500">Total Bids</p>
-                            <p className="text-lg font-semibold text-slate-700">{selectedCarDetails.bidCount}</p>
+                            <p className="text-lg font-semibold text-slate-700">{selectedCarDetails.totalBids}</p>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -825,7 +827,7 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
           </div>
           <div className="text-center bg-[#f8f9fa] rounded-lg px-3 py-2">
             <p className="text-xs text-[#7f8c8d] font-medium">{t.bids}</p>
-            <p className="text-xl font-bold text-[#2c3e50]">{car.bidCount}</p>
+            <p className="text-xl font-bold text-[#2c3e50]">{car.totalBids}</p>
           </div>
         </div>
 
