@@ -258,7 +258,7 @@ export default function CarAuctionPlatform() {
       {/* Search and Filters */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Summary Stats */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="hidden mt-12 grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-[#ee3c48] text-white border-0 shadow-md">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -339,6 +339,15 @@ export default function CarAuctionPlatform() {
           </div>
         ) : (
           <>
+            {/* Live Auctions Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <h2 className="text-3xl font-bold text-[#2c3e50]">Live Auctions</h2>
+              </div>
+              <p className="text-[#7f8c8d]">Join thousands of bidders competing for premium vehicles</p>
+            </div>
+
             {/* Auction Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
               {filteredCars.map((car) => (
@@ -446,7 +455,7 @@ export default function CarAuctionPlatform() {
                           </div>
                           <div>
                             <p className="text-slate-500">Mileage</p>
-                            <p className="font-semibold">{selectedCarDetails.mileage.toLocaleString()} miles</p>
+                            <p className="font-semibold">{selectedCarDetails.mileage.toLocaleString()} km</p>
                           </div>
                           <div>
                             <p className="text-slate-500">Color</p>
@@ -716,29 +725,29 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
     const now = new Date();
     const end = new Date(endTime);
     const diff = end.getTime() - now.getTime();
-    
+
     if (diff <= 0) {
       return { text: 'ENDED', seconds: 0 };
     }
-    
+
     const totalSeconds = Math.floor(diff / 1000);
     const days = Math.floor(totalSeconds / (60 * 60 * 24));
     const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
     const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
     const seconds = Math.floor(totalSeconds % 60);
-    
+
     // Format with leading zeros for better readability
     const formattedHours = hours.toString().padStart(2, '0');
     const formattedMinutes = minutes.toString().padStart(2, '0');
     const formattedSeconds = seconds.toString().padStart(2, '0');
-    
+
     let text;
     if (days > 0) {
       text = `${days}d ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
     } else {
       text = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
     }
-    
+
     return { text, seconds: totalSeconds };
   };
 
@@ -753,21 +762,22 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
 
 
   return (
-    <Card key={car.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border border-[#e9ecef] shadow-md bg-white cursor-pointer" onClick={() => openCarDetails(car)}>
-    <div className="relative">
+    <Card key={car.id} className="overflow-hidden hover:shadow-2xl transition-all duration-300 border border-[#ee3c48]/20 shadow-lg bg-white cursor-pointer group">
+    <div className="relative overflow-hidden">
       <img
         src={car.image}
         alt={`${car.year} ${car.make} ${car.model}`}
-        className="w-full h-48 object-cover"
+        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
       />
-      <div className="absolute top-4 left-4">
-        <Badge className="bg-[#2c3e50] text-white">
-          {car.condition}
-        </Badge>
+      {/* Live Badge */}
+      <div className="absolute top-3 left-3 flex items-center gap-1">
+        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+        <Badge className="bg-[#ee3c48] text-white text-xs font-bold">LIVE</Badge>
       </div>
-      <div className="absolute top-4 right-4">
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
-          <div className="flex items-center space-x-1 text-[#2c3e50]">
+      {/* Timer Badge - Enhanced */}
+      <div className="absolute top-3 right-3">
+        <div className={`rounded-lg px-3 py-2 shadow-md backdrop-blur-sm ${timeRemainingSeconds === 0 ? 'bg-red-500/90' : 'bg-[#ee3c48]/90'}`}>
+          <div className="flex items-center space-x-1 text-white">
             <Timer className="w-4 h-4" />
             <span className="font-mono text-sm font-bold">
               {timeRemainingText}
@@ -777,67 +787,87 @@ const CarCard = ({ car, openCarDetails, placeBid, bidAmount, setBidAmount, selec
       </div>
     </div>
 
-    <CardHeader className="pb-3 pt-4">
-      <CardTitle className="text-xl text-[#2c3e50]">
+    <CardHeader className="pb-2 pt-4 px-4">
+      <CardTitle className="text-lg font-bold text-[#2c3e50]">
         {car.year} {car.make} {car.model}
       </CardTitle>
-      <div className="flex items-center justify-between text-sm text-[#7f8c8d] mt-1">
-        <span>{car.mileage.toLocaleString()} {t.miles}</span>
-        <span>{car.location}</span>
+      <div className="flex items-center justify-between text-xs text-[#7f8c8d] mt-2">
+        <span className="flex items-center gap-1">
+          <Gauge className="w-3 h-3" />
+          {car.mileage.toLocaleString()} {t.km}
+        </span>
+        <span className="flex items-center gap-1">
+          <MapPin className="w-3 h-3" />
+          {car.location}
+        </span>
       </div>
     </CardHeader>
 
-    <CardContent className="space-y-5">
-      {/* Vehicle Details */}
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div>
-          <p className="text-[#7f8c8d]">{t.engine}</p>
-          <p className="font-semibold text-[#2c3e50]">{car.engine}</p>
+    <CardContent className="space-y-4 px-4 pb-4">
+      {/* Vehicle Details - Compact */}
+      <div className="grid grid-cols-2 gap-3 text-xs">
+        <div className="bg-[#f8f9fa] p-2 rounded-lg">
+          <p className="text-[#7f8c8d] text-[10px] font-medium">{t.engine}</p>
+          <p className="font-semibold text-[#2c3e50] text-sm">{car.engine}</p>
         </div>
-        <div>
-          <p className="text-[#7f8c8d]">{t.transmission}</p>
-          <p className="font-semibold text-[#2c3e50]">{car.transmission}</p>
+        <div className="bg-[#f8f9fa] p-2 rounded-lg">
+          <p className="text-[#7f8c8d] text-[10px] font-medium">{t.transmission}</p>
+          <p className="font-semibold text-[#2c3e50] text-sm">{car.transmission}</p>
         </div>
       </div>
 
-      {/* Bid Information */}
-      <div className="space-y-4">
+      {/* Bid Information - Highlighted */}
+      <div className="space-y-3 border-t border-[#e9ecef] pt-3">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-[#7f8c8d]">{t.currentBid}</p>
-            <p className="text-2xl font-bold text-[#2c3e50]">{formatCurrency(car.currentBid)}</p>
+            <p className="text-xs text-[#7f8c8d] font-medium">{t.currentBid}</p>
+            <p className="text-2xl font-bold text-[#ee3c48]">{formatCurrency(car.currentBid)}</p>
           </div>
-          <div className="text-end">
-            <p className="text-sm text-[#7f8c8d]">{t.bids}</p>
-            <p className="text-lg font-semibold text-[#34495e]">{car.bidCount}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-[#f8f9fa] rounded-lg p-3 border border-[#e9ecef]">
-            <div className="flex items-center space-x-2">
-              <TrendingUp className="w-4 h-4 text-[#3498db]" />
-              <span className="text-sm text-[#34495e]">{t.highest}</span>
-            </div>
-            <p className="font-bold text-[#2c3e50]">{formatCurrency(car.highestBid)}</p>
-          </div>
-          <div className="bg-[#f8f9fa] rounded-lg p-3 border border-[#e9ecef]">
-            <div className="flex items-center space-x-2">
-              <TrendingDown className="w-4 h-4 text-[#34495e]" />
-              <span className="text-sm text-[#34495e]">{t.starting}</span>
-            </div>
-            <p className="font-bold text-[#2c3e50]">{formatCurrency(car.lowestBid)}</p>
+          <div className="text-center bg-[#f8f9fa] rounded-lg px-3 py-2">
+            <p className="text-xs text-[#7f8c8d] font-medium">{t.bids}</p>
+            <p className="text-xl font-bold text-[#2c3e50]">{car.bidCount}</p>
           </div>
         </div>
 
-        {/* Time Status */}
-        <div className={`text-center py-2 rounded-lg border border-[#e9ecef] ${timeRemainingSeconds === 0 ? 'bg-[#f8f9fa] text-[#7f8c8d]' : 'bg-[#f8f9fa] text-[#2c3e50]'}`}>
+        {/* Bid Range */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-green-50 rounded-lg p-2 border border-green-200">
+            <div className="flex items-center space-x-1">
+              <TrendingUp className="w-3 h-3 text-green-600" />
+              <span className="text-xs text-green-700 font-medium">{t.highest}</span>
+            </div>
+            <p className="font-bold text-green-900 text-sm mt-1">{formatCurrency(car.highestBid)}</p>
+          </div>
+          <div className="bg-orange-50 rounded-lg p-2 border border-orange-200">
+            <div className="flex items-center space-x-1">
+              <TrendingDown className="w-3 h-3 text-orange-600" />
+              <span className="text-xs text-orange-700 font-medium">{t.starting}</span>
+            </div>
+            <p className="font-bold text-orange-900 text-sm mt-1">{formatCurrency(car.lowestBid)}</p>
+          </div>
+        </div>
+
+        {/* Action Button - Prominent CTA */}
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            openCarDetails(car);
+          }}
+          className={`w-full font-bold py-6 text-white transition-all ${
+            timeRemainingSeconds > 0
+              ? 'bg-gradient-to-r from-[#ee3c48] to-[#d63447] hover:shadow-lg hover:scale-105'
+              : 'bg-gray-400 cursor-not-allowed'
+          }`}
+        >
           {timeRemainingSeconds > 0 ? (
-            <span className="font-semibold">{t.auctionRunning}</span>
+            <span className="flex items-center justify-center gap-2">
+              <span>🔨</span>
+              PLACE BID
+            </span>
           ) : (
-            <span className="font-bold">{t.auctionEnded}</span>
+            'AUCTION ENDED'
           )}
-        </div>
+        </Button>
       </div>
     </CardContent>
   </Card>
