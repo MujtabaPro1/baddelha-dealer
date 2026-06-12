@@ -84,6 +84,15 @@ const Navbar: React.FC = () => {
               </button>
             ) : (
               <div className="flex items-center space-x-3">
+                  <button
+              onClick={() => {
+                window.location.href = '/';
+              }}
+              className="bg-[#ee3c48] hover:bg-[#d4343e] text-white px-5 py-2 rounded-md transition transform hover:scale-105"
+              aria-label={`Live Cars`}
+            >
+               Live Cars
+            </button>
                 <NotificationMenu />
                 <UserProfileMenu />
               </div>
@@ -111,6 +120,15 @@ const Navbar: React.FC = () => {
               </button>
             ) : (
               <div className="flex items-center space-x-2">
+                <button
+              onClick={() => {
+                window.location.href = '/';
+              }}
+              className="bg-[#ee3c48] hover:bg-[#d4343e] text-white px-5 py-2 rounded-md transition transform hover:scale-105"
+              aria-label={`Live Cars`}
+            >
+               Live Cars
+            </button>
                 <NotificationMenu />
                 <UserProfileMenu />
               </div>
