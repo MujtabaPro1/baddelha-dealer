@@ -40,6 +40,7 @@ interface Car {
   doors: number;
   seats: number;
   features: string[];
+  totalBids?: any;
   inspectionReport: {
     exterior: string;
     interior: string;
@@ -575,7 +576,7 @@ export default function CarAuctionPlatform() {
                           </div>
                           <div className="text-right">
                             <p className="text-sm text-slate-500">Total Bids</p>
-                            <p className="text-lg font-semibold text-slate-700">{selectedCarDetails.totalBids}</p>
+                            <p className="text-lg font-semibold text-slate-700">{selectedCarDetails?.totalBids}</p>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
